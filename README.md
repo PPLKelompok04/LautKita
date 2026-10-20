@@ -10,7 +10,7 @@ Fitur: budidaya terumbu karang, ikan, mangrove + pelaporan pencemaran + timeline
 3. [Nama] — Scrum Master + QA Lead
 4. [Nama] — Database Engineer
 5. [Nama] — Backend Lead
-6. [Nama] — Business Analyst
+6. intan — Business Analyst
 7. [Nama] — UI/UX Lead
 8. Muhammad Ihsannussya'ban— DevOps + Tech Architect
 
