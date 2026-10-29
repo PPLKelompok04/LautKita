@@ -1,0 +1,42 @@
+{
+  "name": "seaclean",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@supabase/supabase-js": "^2.118.0",
+    "bcryptjs": "^3.0.3",
+    "leaflet": "^1.9.4",
+    "lucide-react": "1.57.0",
+    "next": "16.4.2",
+    "next-auth": "^4.24.15",
+    "prisma": "^6.19.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-leaflet": "^5.0.0",
+    "recharts": "^3.10.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.2",
+    "tailwindcss": "^4"
+  },
+  "allowScripts": {
+    "prisma@6.19.3": true,
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true
+  },
+  "prisma": {
+    "schema": "./prisma",
+    "seed": "node prisma/seed.js"
+  }
+}

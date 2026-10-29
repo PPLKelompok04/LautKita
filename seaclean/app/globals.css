@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Warna dari mockup Figma LAUTKITA. Pakai di Tailwind sebagai bg-laut, text-teks, border-garis, dst. */
+@theme inline {
+  --color-laut: #146c94;
+  --color-laut-tua: #355872;
+  --color-laut-muda: #eaf4f8;
+  --color-laut-pucat: #afd3e2;
+  --color-latar: #f4f8fa;
+  --color-garis: #dce6eb;
+  --color-teks: #1d2f3b;
+  --color-redup: #627783;
+  --color-bahaya-muda: #f6f1f1;
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--color-latar);
+  color: var(--color-teks);
+}

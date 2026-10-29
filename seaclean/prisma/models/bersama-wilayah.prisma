@@ -1,0 +1,19 @@
+// Data bersama: Wilayah (dipakai user, lokasi budidaya, kegiatan, rawan abrasi)
+
+model Wilayah {
+  id            Int    @id @default(autoincrement()) @map("id_wilayah")
+  nama          String @map("nama_wilayah")
+  kabupatenKota String @map("kabupaten_kota")
+  provinsi      String
+  latitude      Float?
+  longitude     Float?
+
+  // Relasi balik. Setiap PBI menghapus tanda // di barisnya sendiri saat commit.
+  // users          User[] // PBI-01
+  // lokasiBudidaya LokasiBudidaya[] // PBI-02
+  // kegiatan       Kegiatan[] // PBI-05
+  // rawanAbrasi    LokasiRawanAbrasi[] // PBI-08
+
+  @@unique([nama, provinsi])
+  @@map("wilayah")
+}
