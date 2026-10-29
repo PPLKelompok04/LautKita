@@ -10,7 +10,7 @@ model Wilayah {
 
   // Relasi balik. Setiap PBI menghapus tanda // di barisnya sendiri saat commit.
   // users          User[] // PBI-01
-  // lokasiBudidaya LokasiBudidaya[] // PBI-02
+  lokasiBudidaya LokasiBudidaya[] // PBI-02
   // kegiatan       Kegiatan[] // PBI-05
   // rawanAbrasi    LokasiRawanAbrasi[] // PBI-08
 

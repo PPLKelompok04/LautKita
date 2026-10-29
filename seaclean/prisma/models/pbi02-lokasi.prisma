@@ -1,0 +1,41 @@
+// PBI-02 CRUD Lokasi Budidaya & Zona
+
+enum Ekosistem {
+  KARANG
+  IKAN
+  MANGROVE
+}
+
+model LokasiBudidaya {
+  id        Int       @id @default(autoincrement()) @map("id_lokasi")
+  nama      String    @map("nama_lokasi")
+  ekosistem Ekosistem @map("jenis_budidaya")
+  wilayahId Int?      @map("id_wilayah")
+  deskripsi String?
+  latitude  Float
+  longitude Float
+  fotoUrl   String?   @map("foto_url")
+  wilayah   Wilayah?  @relation(fields: [wilayahId], references: [id], onDelete: SetNull)
+  zona      Zona[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  // Relasi balik. Hapus tanda // di baris PBI-mu saat commit.
+  // program ProgramBudidaya[] // PBI-04
+
+  @@index([ekosistem])
+  @@index([wilayahId])
+  @@map("lokasi_budidaya")
+}
+
+model Zona {
+  id         Int            @id @default(autoincrement()) @map("id_zona")
+  lokasiId   Int            @map("id_lokasi")
+  nama       String         @map("nama_zona")
+  luasM2     Float?         @map("luas_m2")
+  keterangan String?
+  lokasi     LokasiBudidaya @relation(fields: [lokasiId], references: [id], onDelete: Cascade)
+
+  @@index([lokasiId])
+  @@map("zona")
+}
