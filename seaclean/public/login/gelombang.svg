@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="608" height="787.5" viewBox="0 0 608 787.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="SVG - Ambient Wave Graphic Overlay" opacity="0.1" clip-path="url(#clip0_0_20)">
+<path id="Vector" d="M0 236.25C101.333 315 202.667 315 304 236.25C405.333 157.5 506.667 157.5 608 236.25V787.5H0V236.25" fill="white"/>
+<path id="Vector_2" opacity="0.5" d="M0 472.5C121.6 551.25 243.2 538.125 364.8 433.125C486.4 328.125 567.467 367.5 608 551.25V787.5H0V472.5" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_0_20">
+<rect width="608" height="787.5" fill="white"/>
+</clipPath>
+</defs>
+</svg>
