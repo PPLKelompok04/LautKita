@@ -8,7 +8,7 @@ Fitur: budidaya terumbu karang, ikan, mangrove + pelaporan pencemaran + timeline
 1. [Nama] — Project Manager / Product Owner
 2. Indira Nada Diyanti — System Analyst + Koordinator Tools AI
 3. [Nama] — Scrum Master + QA Lead
-4. [Nama] — Database Engineer
+4. Syahrial Ariefin Basri — Database Engineer
 5. [Nama] — Backend Lead
 6. Intan Nurfathriah — Business Analyst
 7. [Nama] — UI/UX Lead
