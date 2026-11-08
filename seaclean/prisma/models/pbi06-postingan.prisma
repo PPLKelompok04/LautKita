@@ -1,0 +1,42 @@
+// like, komentar, share di PBI-10
+
+enum StatusPostingan {
+  TAMPIL
+  DISEMBUNYIKAN
+}
+
+model Postingan {
+  id        Int             @id @default(autoincrement()) @map("id_postingan")
+  penulisId Int             @map("id_penulis")
+  isi       String
+  gambarUrl String?         @map("gambar_url")
+  status    StatusPostingan @default(TAMPIL) @map("status_publikasi")
+  penulis   User            @relation(fields: [penulisId], references: [id], onDelete: Cascade)
+  tag       PostinganTag[]
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@index([penulisId])
+  @@index([createdAt])
+  @@map("postingan")
+}
+
+model Tag {
+  id        Int            @id @default(autoincrement()) @map("id_tag")
+  // huruf kecil, tanpa #
+  nama      String         @unique @map("nama_tag")
+  postingan PostinganTag[]
+
+  @@map("tag")
+}
+
+model PostinganTag {
+  postinganId Int       @map("id_postingan")
+  tagId       Int       @map("id_tag")
+  postingan   Postingan @relation(fields: [postinganId], references: [id], onDelete: Cascade)
+  tag         Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postinganId, tagId])
+  @@index([tagId])
+  @@map("postingan_tag")
+}

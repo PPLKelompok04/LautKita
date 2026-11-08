@@ -25,7 +25,7 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   // relasi
-  // postingan Postingan[] // PBI-06
+  postingan Postingan[] // PBI-06
 
   @@index([roleId])
   @@index([wilayahId])
