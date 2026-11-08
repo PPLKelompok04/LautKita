@@ -1,0 +1,50 @@
+// IUCN: LC, VU, EN, CR
+enum StatusKonservasi {
+  LC
+  VU
+  EN
+  CR
+}
+
+model Spesies {
+  id               Int              @id @default(autoincrement()) @map("id_spesies")
+  namaLokal        String           @map("nama_lokal")
+  namaIlmiah       String?          @unique @map("nama_ilmiah")
+  ekosistem        Ekosistem        @map("golongan")
+  statusKonservasi StatusKonservasi @default(LC) @map("status_konservasi")
+  deskripsi        String?
+  aktif            Boolean          @default(true) @map("is_active")
+  umurBibit        String?          @map("umur_bibit")
+  // syarat tanam
+  substrat         String?
+  salinitas        String?
+  kondisiPerairan  String?          @map("kondisi_perairan")
+  caraMenanam      String?          @map("cara_menanam")
+  fotoUrl          String?          @map("foto_url")
+  dokumenUrl       String?          @map("dokumen_url")
+  bibit            Bibit[]
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  // relasi
+  // program ProgramBudidaya[] // PBI-04
+
+  @@index([ekosistem])
+  @@map("spesies")
+}
+
+model Bibit {
+  id         Int      @id @default(autoincrement()) @map("id_bibit")
+  spesiesId  Int      @map("id_spesies")
+  nama       String   @map("nama_bibit")
+  sumber     String?
+  stok       Int      @default(0)
+  satuan     String   @default("bibit")
+  keterangan String?
+  spesies    Spesies  @relation(fields: [spesiesId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([spesiesId])
+  @@map("bibit")
+}
