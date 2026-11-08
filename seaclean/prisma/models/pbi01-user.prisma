@@ -1,0 +1,33 @@
+model Role {
+  id        Int     @id @default(autoincrement()) @map("id_role")
+  // ADMIN / PETUGAS / RELAWAN
+  kode      String  @unique @map("kode_role")
+  nama      String  @unique @map("nama_role")
+  deskripsi String?
+  users     User[]
+
+  @@map("roles")
+}
+
+model User {
+  id           Int      @id @default(autoincrement()) @map("id_user")
+  nama         String   @map("nama_lengkap")
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  noTelepon    String?  @map("no_telepon")
+  fotoUrl      String?  @map("foto_url")
+  aktif        Boolean  @default(true) @map("is_active")
+  roleId       Int      @map("id_role")
+  wilayahId    Int?     @map("id_wilayah")
+  role         Role     @relation(fields: [roleId], references: [id])
+  wilayah      Wilayah? @relation(fields: [wilayahId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // relasi
+  // postingan Postingan[] // PBI-06
+
+  @@index([roleId])
+  @@index([wilayahId])
+  @@map("users")
+}
