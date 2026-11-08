@@ -12,7 +12,7 @@ model Wilayah {
   users          User[] // PBI-01
   lokasiBudidaya LokasiBudidaya[] // PBI-02
   kegiatan       Kegiatan[] // PBI-05
-  // rawanAbrasi    LokasiRawanAbrasi[] // PBI-08
+  rawanAbrasi    LokasiRawanAbrasi[] // PBI-08f
 
   @@unique([nama, provinsi])
   @@map("wilayah")
