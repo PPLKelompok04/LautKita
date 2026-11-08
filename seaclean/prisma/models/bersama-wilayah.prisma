@@ -9,7 +9,7 @@ model Wilayah {
   longitude     Float?
 
   // Relasi balik. Setiap PBI menghapus tanda // di barisnya sendiri saat commit.
-  // users          User[] // PBI-01
+  users          User[] // PBI-01
   lokasiBudidaya LokasiBudidaya[] // PBI-02
   // kegiatan       Kegiatan[] // PBI-05
   // rawanAbrasi    LokasiRawanAbrasi[] // PBI-08
