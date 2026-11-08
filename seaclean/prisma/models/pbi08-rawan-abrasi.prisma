@@ -1,0 +1,26 @@
+enum TingkatKerawanan {
+  RENDAH
+  SEDANG
+  TINGGI
+}
+
+model LokasiRawanAbrasi {
+  id                  Int              @id @default(autoincrement()) @map("id_abrasi")
+  nama                String           @map("nama_titik")
+  wilayahId           Int?             @map("id_wilayah")
+  latitude            Float
+  longitude           Float
+  tingkatKerawanan    TingkatKerawanan @map("tingkat_kerawanan")
+  panjangGarisPantaiM Float?           @map("panjang_garis_pantai_m")
+  lajuAbrasiMPerTahun Float?           @map("laju_abrasi_m_per_tahun")
+  tanggalPendataan    DateTime         @map("tanggal_pendataan") @db.Date
+  keterangan          String?
+  fotoUrl             String?          @map("foto_url")
+  wilayah             Wilayah?         @relation(fields: [wilayahId], references: [id], onDelete: SetNull)
+  createdAt           DateTime         @default(now()) @map("created_at")
+  updatedAt           DateTime         @updatedAt @map("updated_at")
+
+  @@index([tingkatKerawanan])
+  @@index([wilayahId])
+  @@map("rawan_abrasi")
+}
