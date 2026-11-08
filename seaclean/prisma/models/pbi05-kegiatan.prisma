@@ -1,0 +1,40 @@
+// tidak wajib ikut program
+
+enum JenisKegiatan {
+  BERSIH_PANTAI
+  TANAM_MANGROVE
+  TRANSPLANTASI_KARANG
+  EDUKASI
+  LAINNYA
+}
+
+enum StatusKegiatan {
+  DIBUKA
+  PENUH
+  DITUTUP
+  SELESAI
+  DIBATALKAN
+}
+
+model Kegiatan {
+  id         Int            @id @default(autoincrement()) @map("id_kegiatan")
+  judul      String
+  jenis      JenisKegiatan
+  deskripsi  String?
+  tanggal    DateTime       @map("tanggal_mulai")
+  wilayahId  Int?           @map("id_wilayah")
+  namaLokasi String         @map("lokasi_teks")
+  latitude   Float
+  longitude  Float
+  kuota      Int
+  status     StatusKegiatan @default(DIBUKA)
+  fotoUrl    String?        @map("foto_url")
+  wilayah    Wilayah?       @relation(fields: [wilayahId], references: [id], onDelete: SetNull)
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  @@index([tanggal])
+  @@index([status])
+  @@index([wilayahId])
+  @@map("kegiatan")
+}
