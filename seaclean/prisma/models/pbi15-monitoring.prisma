@@ -29,7 +29,7 @@ model MonitoringBudidaya {
   updatedAt     DateTime         @updatedAt @map("updated_at")
 
   // relasi
-  // verifikasi VerifikasiHasil[] // PBI-16
+  verifikasi VerifikasiHasil[] // PBI-16
 
   @@index([programId])
   @@index([pencatatId])
