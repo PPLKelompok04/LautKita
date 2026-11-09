@@ -40,7 +40,10 @@ async function IsiHalaman({ searchParams }) {
           { lokasi: { nama: { contains: q, mode: "insensitive" } } },
         ],
       },
-      include: { lokasi: { select: { nama: true, wilayah: { select: { nama: true } } } } },
+      include: {
+        lokasi: { select: { nama: true, wilayah: { select: { nama: true } } } },
+        _count: { select: { peserta: { where: { status: "DISETUJUI" } } } },
+      },
       orderBy: { tanggalMulai: "desc" },
     }),
     Number.isInteger(idPilih) && idPilih > 0
@@ -63,8 +66,9 @@ async function IsiHalaman({ searchParams }) {
                   <p className="font-normal text-redup">{LABEL_STATUS_PROGRAM[p.status]}</p>
                 </td>
                 <td>{[p.lokasi.nama, p.lokasi.wilayah?.nama].filter(Boolean).join(", ")}</td>
-                {/* peserta nanti dari PBI-14 */}
-                <td>0/{p.kuotaPeserta}</td>
+                <td>
+                  {p._count.peserta}/{p.kuotaPeserta}
+                </td>
                 <td className="whitespace-nowrap font-semibold text-laut">
                   <Link href={`/admin/program?pilih=${p.id}`} className="hover:underline">
                     Edit

@@ -1,0 +1,24 @@
+enum StatusPeserta {
+  MENUNGGU
+  DISETUJUI
+  DITOLAK
+}
+
+model PesertaProgram {
+  id        Int             @id @default(autoincrement()) @map("id_peserta")
+  programId Int             @map("id_program")
+  userId    Int             @map("id_user")
+  motivasi  String?
+  status    StatusPeserta   @default(MENUNGGU)
+  // alasan kalau ditolak
+  catatan   String?         @map("catatan_admin")
+  program   ProgramBudidaya @relation(fields: [programId], references: [id], onDelete: Cascade)
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@unique([programId, userId])
+  @@index([userId])
+  @@index([status])
+  @@map("peserta_program")
+}
