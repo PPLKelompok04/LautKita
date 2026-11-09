@@ -1,0 +1,14 @@
+// notifikasi untuk PBI-10, 11, 12, 14, 16
+model Notifikasi {
+  id        Int      @id @default(autoincrement()) @map("id_notifikasi")
+  userId    Int      @map("id_user")
+  judul     String
+  isi       String
+  tautan    String?
+  dibaca    Boolean  @default(false) @map("is_dibaca")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, dibaca])
+  @@map("notifikasi")
+}

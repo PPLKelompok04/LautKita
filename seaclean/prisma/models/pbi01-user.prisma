@@ -25,7 +25,26 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   // relasi
-  postingan Postingan[] // PBI-06
+  postingan  Postingan[] // PBI-06
+  notifikasi Notifikasi[]
+
+  // laporanPencemaran LaporanPencemaran[] // PBI-09
+
+  // suka     Suka[] // PBI-10
+  // komentar Komentar[] // PBI-10
+  // bagikan  Bagikan[] // PBI-10
+
+  // verifikasiLaporan VerifikasiLaporan[] // PBI-11
+
+  // tindakLanjut TindakLanjut[] // PBI-12
+
+  // pendaftaranKegiatan PendaftaranKegiatan[] // PBI-13
+
+  // partisipasiProgram PesertaProgram[] // PBI-14
+
+  // monitoring MonitoringBudidaya[] // PBI-15
+
+  // verifikasiHasil VerifikasiHasil[] // PBI-16
 
   @@index([roleId])
   @@index([wilayahId])

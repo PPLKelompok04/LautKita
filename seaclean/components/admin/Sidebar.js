@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronRight, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { MENU, menuAktif } from "@/app/admin/menu";
+import { menuAktif, menuUntuk } from "@/app/admin/menu";
 
 export function Merek({ sub = "Platform admin" }) {
   return (
@@ -20,13 +20,15 @@ export function Merek({ sub = "Platform admin" }) {
   );
 }
 
-export default function Sidebar() {
+// `role` dari session, menu yang tampil disesuaikan
+export default function Sidebar({ role }) {
+  const menu = menuUntuk(role);
   return (
     <aside className="flex flex-col justify-between bg-laut px-4 py-6 md:sticky md:top-0 md:h-screen md:w-[236px] md:shrink-0 md:overflow-y-auto">
       <div className="flex flex-col gap-6">
         <Merek />
-        <Suspense fallback={<Menu />}>
-          <MenuAktif />
+        <Suspense fallback={<Menu menu={menu} />}>
+          <MenuAktif menu={menu} />
         </Suspense>
       </div>
       <button
@@ -44,14 +46,14 @@ export default function Sidebar() {
   );
 }
 
-function MenuAktif() {
-  return <Menu aktif={menuAktif(usePathname())} />;
+function MenuAktif({ menu }) {
+  return <Menu menu={menu} aktif={menuAktif(usePathname())} />;
 }
 
-function Menu({ aktif }) {
+function Menu({ menu, aktif }) {
   return (
     <nav className="flex gap-1 overflow-x-auto [scrollbar-width:none] md:flex-col md:gap-4 md:overflow-visible">
-      {MENU.map((g) => (
+      {menu.map((g) => (
         <div key={g.grup} className="flex gap-1 md:flex-col md:gap-0.5">
           <p className="hidden pb-1 text-[10px] font-semibold uppercase text-laut-pucat md:block">{g.grup}</p>
           {g.item.map((m) => {

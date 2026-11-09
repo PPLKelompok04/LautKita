@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { Memuat } from "@/components/admin/Halaman";
-import TombolKeluar from "@/components/TombolKeluar";
+import NavAnggota from "@/components/anggota/NavAnggota";
 import FormPostingan from "./FormPostingan";
 import KartuPostingan from "./KartuPostingan";
 
@@ -12,15 +12,7 @@ export const metadata = { title: "Timeline - LautKita" };
 export default function TimelinePage({ searchParams }) {
   return (
     <div className="flex-1 bg-latar">
-      <header className="sticky top-0 z-10 border-b border-garis bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3">
-          <Link href="/timeline" className="leading-tight">
-            <span className="block text-lg font-extrabold text-laut">LAUTKITA</span>
-            <span className="block text-xs text-redup">Timeline</span>
-          </Link>
-          <TombolKeluar className="rounded-[10px] border border-garis px-3 py-1.5 text-xs font-semibold text-laut hover:bg-latar" />
-        </div>
-      </header>
+      <NavAnggota />
       <main className="mx-auto flex max-w-xl flex-col gap-4 px-4 py-5">
         <Suspense fallback={<Memuat />}>
           <Feed searchParams={searchParams} />
