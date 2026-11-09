@@ -1,0 +1,43 @@
+enum StatusProgram {
+  DRAF
+  SEGERA_HADIR
+  DIBUKA
+  BERJALAN
+  SELESAI
+}
+
+enum FrekuensiMonitoring {
+  MINGGUAN
+  DUA_MINGGUAN
+  BULANAN
+}
+
+model ProgramBudidaya {
+  id               Int                 @id @default(autoincrement()) @map("id_program")
+  nama             String              @map("nama_program")
+  penyelenggara    String
+  ekosistem        Ekosistem           @map("jenis_budidaya")
+  lokasiId         Int                 @map("id_lokasi")
+  spesiesId        Int                 @map("id_spesies")
+  deskripsi        String
+  tanggalMulai     DateTime            @map("tanggal_mulai") @db.Date
+  tanggalSelesai   DateTime            @map("tanggal_selesai") @db.Date
+  batasPendaftaran DateTime            @map("batas_pendaftaran") @db.Date
+  waktuPenanaman   String              @map("waktu_penanaman")
+  kuotaPeserta     Int                 @map("kuota_peserta")
+  targetBibit      Int                 @map("target_bibit")
+  pendamping       String
+  monitoring       FrekuensiMonitoring @default(DUA_MINGGUAN)
+  persyaratan      String
+  status           StatusProgram       @default(DRAF)
+  fotoUrl          String?             @map("foto_url")
+  lokasi           LokasiBudidaya      @relation(fields: [lokasiId], references: [id], onDelete: Restrict)
+  spesies          Spesies             @relation(fields: [spesiesId], references: [id], onDelete: Restrict)
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+
+  @@index([lokasiId])
+  @@index([spesiesId])
+  @@index([status])
+  @@map("program")
+}
