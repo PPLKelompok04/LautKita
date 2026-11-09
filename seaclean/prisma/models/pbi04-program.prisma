@@ -39,7 +39,7 @@ model ProgramBudidaya {
   // relasi
   peserta PesertaProgram[] // PBI-14
 
-  // catatanMonitoring MonitoringBudidaya[] // PBI-15
+  catatanMonitoring MonitoringBudidaya[] // PBI-15
 
   @@index([lokasiId])
   @@index([spesiesId])

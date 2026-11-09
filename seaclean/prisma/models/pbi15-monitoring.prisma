@@ -1,0 +1,38 @@
+enum JenisMonitoring {
+  PENANAMAN
+  TRANSPLANTASI
+  PEMANTAUAN
+}
+
+// status diisi verifikator lewat halaman verifikasi hasil
+enum StatusMonitoring {
+  MENUNGGU
+  DITERIMA
+  DITOLAK
+  REVISI
+}
+
+model MonitoringBudidaya {
+  id            Int              @id @default(autoincrement()) @map("id_monitoring")
+  programId     Int              @map("id_program")
+  pencatatId    Int              @map("id_pencatat")
+  jenis         JenisMonitoring
+  tanggal       DateTime         @map("tanggal_catat") @db.Date
+  jumlahDitanam Int              @map("jumlah_ditanam")
+  jumlahHidup   Int              @map("jumlah_hidup")
+  catatan       String?
+  fotoUrl       String?          @map("foto_url")
+  status        StatusMonitoring @default(MENUNGGU)
+  program       ProgramBudidaya  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  pencatat      User             @relation(fields: [pencatatId], references: [id], onDelete: Cascade)
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  // relasi
+  // verifikasi VerifikasiHasil[] // PBI-16
+
+  @@index([programId])
+  @@index([pencatatId])
+  @@index([status])
+  @@map("monitoring_budidaya")
+}
