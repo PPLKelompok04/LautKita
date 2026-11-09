@@ -44,7 +44,7 @@ model User {
 
   monitoring MonitoringBudidaya[] // PBI-15
 
-  // verifikasiHasil VerifikasiHasil[] // PBI-16
+  verifikasiHasil VerifikasiHasil[] // PBI-16
 
   @@index([roleId])
   @@index([wilayahId])

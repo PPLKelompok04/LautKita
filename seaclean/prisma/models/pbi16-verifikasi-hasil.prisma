@@ -1,0 +1,21 @@
+enum KeputusanHasil {
+  DITERIMA
+  DITOLAK
+  REVISI
+}
+
+// satu catatan monitoring bisa diverifikasi beberapa kali (kalau direvisi)
+model VerifikasiHasil {
+  id            Int                @id @default(autoincrement()) @map("id_verifikasi_hasil")
+  monitoringId  Int                @map("id_monitoring")
+  verifikatorId Int                @map("id_verifikator")
+  keputusan     KeputusanHasil
+  catatan       String
+  monitoring    MonitoringBudidaya @relation(fields: [monitoringId], references: [id], onDelete: Cascade)
+  verifikator   User               @relation(fields: [verifikatorId], references: [id], onDelete: Restrict)
+  createdAt     DateTime           @default(now()) @map("created_at")
+
+  @@index([monitoringId])
+  @@index([verifikatorId])
+  @@map("verifikasi_hasil")
+}
