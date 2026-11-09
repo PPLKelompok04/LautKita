@@ -1,4 +1,3 @@
-import { connection } from "next/server";
 import { Suspense } from "react";
 import { getSession } from "@/lib/auth";
 import Sidebar, { Breadcrumb } from "@/components/admin/Sidebar";
@@ -27,10 +26,17 @@ async function ProfilAdmin() {
   );
 }
 
+async function SidebarSesi() {
+  const session = await getSession();
+  return <Sidebar role={session?.user?.role} />;
+}
+
 export default function AdminLayout({ children }) {
   return (
     <div className="flex min-h-full flex-1 flex-col md:flex-row">
-      <Sidebar />
+      <Suspense fallback={<Sidebar />}>
+        <SidebarSesi />
+      </Suspense>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-[76px] items-center justify-between border-b border-garis bg-white px-4 md:px-8">
           <Breadcrumb />

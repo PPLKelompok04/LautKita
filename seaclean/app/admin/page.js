@@ -3,19 +3,29 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 import { CalendarDays, MapPin, Sprout, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
 import { Judul, Memuat, Statistik } from "@/components/admin/Halaman";
-import { MENU } from "./menu";
+import { menuUntuk } from "./menu";
 
 export const metadata = { title: "Ringkasan - LautKita" };
 
 export default function AdminHome() {
   return (
     <>
-      <Judul judul="Ringkasan" keterangan="Berikut ringkasan data master LautKita (Sprint 1)." />
+      <Judul judul="Ringkasan" keterangan="Berikut ringkasan data LautKita." />
       <Suspense fallback={<Memuat />}>
         <Angka />
+        <DaftarMenu />
       </Suspense>
-      {MENU.filter((g) => g.grup !== "Menu utama").map((g) => (
+    </>
+  );
+}
+
+async function DaftarMenu() {
+  const session = await getSession();
+  return (
+    <>
+      {menuUntuk(session?.user?.role).filter((g) => g.grup !== "Menu utama").map((g) => (
         <section key={g.grup} className="flex flex-col gap-2">
           <h2 className="text-[10px] font-bold uppercase text-redup">{g.grup}</h2>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

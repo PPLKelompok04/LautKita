@@ -36,6 +36,11 @@ model ProgramBudidaya {
   createdAt        DateTime            @default(now()) @map("created_at")
   updatedAt        DateTime            @updatedAt @map("updated_at")
 
+  // relasi
+  // peserta PesertaProgram[] // PBI-14
+
+  // catatanMonitoring MonitoringBudidaya[] // PBI-15
+
   @@index([lokasiId])
   @@index([spesiesId])
   @@index([status])

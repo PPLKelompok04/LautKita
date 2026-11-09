@@ -6,33 +6,24 @@ enum StatusPostingan {
 }
 
 model Postingan {
-  id        Int                   @id @default(autoincrement()) @map("id_postingan")
-  penulisId Int                   @map("id_penulis")
+  id        Int             @id @default(autoincrement()) @map("id_postingan")
+  penulisId Int             @map("id_penulis")
   isi       String
-  gambarUrl String?               @map("gambar_url")
-  status    StatusPostingan       @default(TAMPIL) @map("status_publikasi")
-  penulis   User                  @relation(fields: [penulisId], references: [id], onDelete: Cascade)
+  gambarUrl String?         @map("gambar_url")
+  status    StatusPostingan @default(TAMPIL) @map("status_publikasi")
+  penulis   User            @relation(fields: [penulisId], references: [id], onDelete: Cascade)
   tag       PostinganTag[]
-  peringatan PeringatanPostingan[]
-  createdAt DateTime              @default(now()) @map("created_at")
-  updatedAt DateTime              @updatedAt @map("updated_at")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  // relasi
+  // suka     Suka[] // PBI-10
+  // komentar Komentar[] // PBI-10
+  // bagikan  Bagikan[] // PBI-10
 
   @@index([penulisId])
   @@index([createdAt])
   @@map("postingan")
-}
-
-// pesan peringatan dari admin ke penulis; ada pesan = sudah ditindaklanjuti
-model PeringatanPostingan {
-  id          Int       @id @default(autoincrement()) @map("id_peringatan")
-  postinganId Int       @map("id_postingan")
-  adminId     Int       @map("id_admin")
-  pesan       String
-  createdAt   DateTime  @default(now()) @map("created_at")
-  postingan   Postingan @relation(fields: [postinganId], references: [id], onDelete: Cascade)
-
-  @@index([postinganId])
-  @@map("peringatan_postingan")
 }
 
 model Tag {
