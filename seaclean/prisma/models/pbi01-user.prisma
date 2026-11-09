@@ -30,7 +30,7 @@ model User {
 
   // laporanPencemaran LaporanPencemaran[] // PBI-09
 
-  // suka     Suka[] // PBI-10
+  // suka      Suka[] // PBI-10
   // komentar Komentar[] // PBI-10
   // bagikan  Bagikan[] // PBI-10
 
@@ -38,7 +38,7 @@ model User {
 
   // tindakLanjut TindakLanjut[] // PBI-12
 
-  // pendaftaranKegiatan PendaftaranKegiatan[] // PBI-13
+  pendaftaran PendaftaranKegiatan[] // PBI-13 (diaktifkan)
 
   // partisipasiProgram PesertaProgram[] // PBI-14
 
