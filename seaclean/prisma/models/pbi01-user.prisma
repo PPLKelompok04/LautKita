@@ -42,7 +42,7 @@ model User {
 
   partisipasiProgram PesertaProgram[] // PBI-14
 
-  // monitoring MonitoringBudidaya[] // PBI-15
+  monitoring MonitoringBudidaya[] // PBI-15
 
   // verifikasiHasil VerifikasiHasil[] // PBI-16
 
