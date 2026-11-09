@@ -22,6 +22,7 @@ export default function AdminHome() {
 }
 
 async function DaftarMenu() {
+  await connection();
   const session = await getSession();
   return (
     <>

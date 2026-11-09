@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { getSession } from "@/lib/auth";
 import Sidebar, { Breadcrumb } from "@/components/admin/Sidebar";
 import TombolKeluar from "@/components/TombolKeluar";
@@ -6,7 +7,14 @@ import TombolKeluar from "@/components/TombolKeluar";
 const NAMA_ROLE = { ADMIN: "Admin", PETUGAS: "Petugas lapangan", RELAWAN: "Relawan" };
 
 async function ProfilAdmin() {
-  const session = await getSession();
+  await connection();
+  let session = null;
+  try {
+    session = await getSession();
+  } catch (e) {
+    session = null;
+  }
+  
   const nama = session?.user?.name ?? "";
   const inisial = nama
     .split(" ")
@@ -27,7 +35,13 @@ async function ProfilAdmin() {
 }
 
 async function SidebarSesi() {
-  const session = await getSession();
+  await connection();
+  let session = null;
+  try {
+    session = await getSession();
+  } catch (e) {
+    session = null;
+  }
   return <Sidebar role={session?.user?.role} />;
 }
 

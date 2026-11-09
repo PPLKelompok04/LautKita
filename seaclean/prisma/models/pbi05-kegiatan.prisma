@@ -34,7 +34,7 @@ model Kegiatan {
   updatedAt  DateTime       @updatedAt @map("updated_at")
 
   // relasi
-  // pendaftaran PendaftaranKegiatan[] // PBI-13
+  pendaftaran PendaftaranKegiatan[]
 
   @@index([tanggal])
   @@index([status])

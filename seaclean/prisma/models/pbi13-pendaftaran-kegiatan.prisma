@@ -1,0 +1,19 @@
+enum StatusKehadiran {
+  BELUM
+  HADIR
+  TIDAK_HADIR
+}
+
+model PendaftaranKegiatan {
+  id         Int             @id @default(autoincrement()) @map("id_pendaftaran")
+  kegiatanId Int             @map("id_kegiatan")
+  userId     Int             @map("id_user")
+  kehadiran  StatusKehadiran @default(BELUM)
+  kegiatan   Kegiatan        @relation(fields: [kegiatanId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now()) @map("created_at")
+
+  @@unique([kegiatanId, userId])
+  @@index([userId])
+  @@map("pendaftaran_kegiatan")
+}
