@@ -34,7 +34,7 @@ model User {
   // komentar Komentar[] // PBI-10
   // bagikan  Bagikan[] // PBI-10
 
-  // verifikasiLaporan VerifikasiLaporan[] // PBI-11
+ verifikasiLaporan VerifikasiLaporan[] // PBI-11
 
   // tindakLanjut TindakLanjut[] // PBI-12
 
