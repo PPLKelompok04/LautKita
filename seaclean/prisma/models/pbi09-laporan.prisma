@@ -1,0 +1,36 @@
+enum StatusLaporan {
+  MENUNGGU
+  VALID
+  DITOLAK
+  DITINDAKLANJUTI
+  SELESAI
+}
+
+model LaporanPencemaran {
+  id         Int                @id @default(autoincrement()) @map("id_laporan")
+  pelaporId  Int                @map("id_pelapor")
+  // nama pelapor disembunyikan dari orang lain
+  anonim     Boolean            @default(false) @map("is_anonim")
+  kategoriId Int                @map("id_kategori")
+  judul      String
+  deskripsi  String
+  latitude   Float
+  longitude  Float
+  alamat     String?            @map("lokasi_teks")
+  fotoUrl    String?            @map("foto_url")
+  status     StatusLaporan      @default(MENUNGGU)
+  pelapor    User               @relation(fields: [pelaporId], references: [id], onDelete: Cascade)
+  kategori   KategoriPencemaran @relation(fields: [kategoriId], references: [id], onDelete: Restrict)
+  createdAt  DateTime           @default(now()) @map("created_at")
+  updatedAt  DateTime           @updatedAt @map("updated_at")
+
+  // relasi
+  // verifikasi VerifikasiLaporan? // PBI-11
+
+  // tindakLanjut TindakLanjut? // PBI-12
+
+  @@index([status])
+  @@index([pelaporId])
+  @@index([kategoriId])
+  @@map("laporan_pencemaran")
+}
