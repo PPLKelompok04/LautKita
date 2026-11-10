@@ -27,7 +27,7 @@ model LaporanPencemaran {
   // relasi
    verifikasi VerifikasiLaporan? // PBI-11
 
-  // tindakLanjut TindakLanjut? // PBI-12
+   tindakLanjut TindakLanjut? // PBI-12
 
   @@index([status])
   @@index([pelaporId])
