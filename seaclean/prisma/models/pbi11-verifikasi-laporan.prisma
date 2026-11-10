@@ -1,0 +1,18 @@
+enum KeputusanVerifikasi {
+  VALID
+  DITOLAK
+}
+
+model VerifikasiLaporan {
+  id            Int                 @id @default(autoincrement()) @map("id_verifikasi")
+  laporanId     Int                 @unique @map("id_laporan")
+  verifikatorId Int                 @map("id_verifikator")
+  keputusan     KeputusanVerifikasi
+  catatan       String              @map("catatan_verifikator")
+  laporan       LaporanPencemaran   @relation(fields: [laporanId], references: [id], onDelete: Cascade)
+  verifikator   User                @relation(fields: [verifikatorId], references: [id], onDelete: Restrict)
+  createdAt     DateTime            @default(now()) @map("created_at")
+
+  @@index([verifikatorId])
+  @@map("verifikasi_laporan")
+}
