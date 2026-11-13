@@ -1,0 +1,23 @@
+enum StatusTindakLanjut {
+  DITUGASKAN
+  SELESAI
+}
+
+model TindakLanjut {
+  id                Int                @id @default(autoincrement()) @map("id_tindak_lanjut")
+  laporanId         Int                @unique @map("id_laporan")
+  petugasId         Int                @map("id_petugas")
+  instruksi         String?
+  status            StatusTindakLanjut @default(DITUGASKAN)
+  catatanPenanganan String?            @map("catatan_penanganan")
+  buktiUrl          String?            @map("bukti_url")
+  selesaiAt         DateTime?          @map("selesai_at")
+  laporan           LaporanPencemaran  @relation(fields: [laporanId], references: [id], onDelete: Cascade)
+  petugas           User               @relation(fields: [petugasId], references: [id], onDelete: Restrict)
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
+  @@index([petugasId])
+  @@index([status])
+  @@map("tindak_lanjut")
+}
