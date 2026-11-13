@@ -12,3 +12,6 @@ model Notifikasi {
   @@index([userId, dibaca])
   @@map("notifikasi")
 }
+
+
+//tes tes commit

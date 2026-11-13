@@ -2,20 +2,31 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, Repeat2 } from "lucide-react";
 import { Lencana } from "@/components/admin/Halaman";
 import { TombolHapus } from "@/components/admin/Tombol";
 import { tampilTanggalJam } from "@/lib/validasi/umum";
+import BarInteraksi from "@/app/postingan/BarInteraksi";
 import { hapusPostingan } from "./actions";
 import FormPostingan from "./FormPostingan";
 
-export default function KartuPostingan({ postingan: p, milikSendiri, bisaHapus }) {
+// `dibagikan` diisi kalau kartu ini repost: { nama, keterangan }
+export default function KartuPostingan({ postingan: p, milikSendiri, bisaHapus, dibagikan }) {
   const [edit, setEdit] = useState(false);
 
   if (edit) return <FormPostingan postingan={p} onSelesai={() => setEdit(false)} />;
 
   return (
     <article className="flex flex-col gap-3 rounded-2xl border border-garis bg-white p-4">
+      {dibagikan && (
+        <div className="-mb-1 flex flex-col gap-1 border-b border-garis pb-2">
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-redup">
+            <Repeat2 size={14} />
+            {dibagikan.nama} membagikan
+          </p>
+          {dibagikan.keterangan && <p className="text-sm text-teks">{dibagikan.keterangan}</p>}
+        </div>
+      )}
       <div className="flex items-start gap-3">
         {p.penulis.fotoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -54,6 +65,7 @@ export default function KartuPostingan({ postingan: p, milikSendiri, bisaHapus }
           ))}
         </div>
       )}
+      {p.status === "TAMPIL" && <BarInteraksi postingan={p} />}
       {(milikSendiri || bisaHapus) && (
         <div className="flex gap-4 border-t border-garis pt-2 text-xs">
           {milikSendiri && (

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { Memuat } from "@/components/admin/Halaman";
 import NavAnggota from "@/components/anggota/NavAnggota";
+import { includePostingan, untukKartu } from "@/app/postingan/data";
 import FormPostingan from "./FormPostingan";
 import KartuPostingan from "./KartuPostingan";
 
@@ -28,23 +29,39 @@ async function Feed({ searchParams }) {
   const userId = session?.user?.id ?? -1;
   const admin = session?.user?.role === "ADMIN";
 
-  const [daftar, topikPopuler] = await Promise.all([
+  const filterTag = tag ? { tag: { some: { tag: { nama: tag.toLowerCase() } } } } : {};
+
+  const [daftar, dibagikan, topikPopuler] = await Promise.all([
     prisma.postingan.findMany({
       where: {
         // penulis tetap bisa lihat postingannya
         OR: [{ status: "TAMPIL" }, { penulisId: userId }],
-        ...(tag ? { tag: { some: { tag: { nama: tag.toLowerCase() } } } } : {}),
+        ...filterTag,
       },
-      include: {
-        penulis: { select: { nama: true, fotoUrl: true, role: { select: { nama: true } }, wilayah: { select: { nama: true, provinsi: true } } } },
-        tag: { include: { tag: true } },
-      },
+      include: includePostingan(userId),
       orderBy: { createdAt: "desc" },
       take: 50,
+    }),
+    prisma.bagikan.findMany({
+      where: { postingan: { status: "TAMPIL", ...filterTag } },
+      include: { user: { select: { nama: true } }, postingan: { include: includePostingan(userId) } },
+      orderBy: { createdAt: "desc" },
+      take: 20,
     }),
     // tag terpopuler
     prisma.tag.findMany({ orderBy: { postingan: { _count: "desc" } }, take: 6, select: { nama: true } }),
   ]);
+
+  // postingan asli + yang dibagikan ulang, urut dari yang terbaru
+  const feed = [
+    ...daftar.map((p) => ({ kunci: `p${p.id}`, waktu: p.createdAt, postingan: p })),
+    ...dibagikan.map((b) => ({
+      kunci: `b${b.id}`,
+      waktu: b.createdAt,
+      postingan: b.postingan,
+      dibagikan: { nama: b.user.nama, keterangan: b.keterangan },
+    })),
+  ].sort((a, b) => b.waktu - a.waktu);
 
   const chip = (aktif) =>
     `whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-semibold ${aktif ? "bg-laut text-white" : "bg-white text-teks border border-garis"}`;
@@ -62,13 +79,15 @@ async function Feed({ searchParams }) {
         ))}
       </nav>
       <FormPostingan />
-      {daftar.length === 0 && <p className="text-center text-sm text-redup">Belum ada postingan.</p>}
-      {daftar.map((p) => (
+      {feed.length === 0 && <p className="text-center text-sm text-redup">Belum ada postingan.</p>}
+      {feed.map(({ kunci, postingan: p, dibagikan }) => (
         <KartuPostingan
-          key={p.id}
-          postingan={{ ...p, tag: p.tag.map((t) => t.tag.nama) }}
-          milikSendiri={p.penulisId === userId}
-          bisaHapus={p.penulisId === userId || admin}
+          key={kunci}
+          postingan={untukKartu(p)}
+          dibagikan={dibagikan}
+          // kartu repost tidak menampilkan Edit/Hapus, supaya postingan asli tidak terhapus dari repost
+          milikSendiri={!dibagikan && p.penulisId === userId}
+          bisaHapus={!dibagikan && (p.penulisId === userId || admin)}
         />
       ))}
     </>

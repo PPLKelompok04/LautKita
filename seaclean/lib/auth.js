@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { connection } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
@@ -47,7 +48,10 @@ export const authOptions = {
   },
 };
 
-export function getSession() {
+// connection() dulu: session harus dibaca per request. Tanpa ini, cacheComponents
+// mencoba prerender dan gagal karena NextAuth memakai crypto.randomBytes.
+export async function getSession() {
+  await connection();
   return getServerSession(authOptions);
 }
 

@@ -25,7 +25,7 @@ model LaporanPencemaran {
   updatedAt  DateTime           @updatedAt @map("updated_at")
 
   // relasi
-   verifikasi VerifikasiLaporan? // PBI-11
+  verifikasi VerifikasiLaporan? // PBI-11
 
    tindakLanjut TindakLanjut? // PBI-12
 
