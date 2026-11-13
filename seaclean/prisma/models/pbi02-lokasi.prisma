@@ -21,7 +21,7 @@ model LokasiBudidaya {
   updatedAt DateTime  @updatedAt @map("updated_at")
 
   // Relasi balik. Hapus tanda // di baris PBI-mu saat commit.
-   program ProgramBudidaya[] // PBI-04
+  program ProgramBudidaya[] // PBI-04
 
   @@index([ekosistem])
   @@index([wilayahId])

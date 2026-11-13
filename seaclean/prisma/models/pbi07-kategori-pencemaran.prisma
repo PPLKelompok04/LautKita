@@ -26,7 +26,7 @@ model KategoriPencemaran {
   updatedAt        DateTime         @updatedAt @map("updated_at")
 
   // relasi
- laporan LaporanPencemaran[] // PBI-09
+  laporan LaporanPencemaran[] // PBI-09
 
   @@index([aktif, jenis])
   @@map("kategori_pencemaran")

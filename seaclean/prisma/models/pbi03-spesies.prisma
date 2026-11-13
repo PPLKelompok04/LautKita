@@ -27,7 +27,7 @@ model Spesies {
   updatedAt        DateTime         @updatedAt @map("updated_at")
 
   // relasi
-   program ProgramBudidaya[] // PBI-04
+  program ProgramBudidaya[] // PBI-04
 
   @@index([ekosistem])
   @@map("spesies")

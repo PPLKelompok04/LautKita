@@ -1,0 +1,47 @@
+model Suka {
+  postinganId Int       @map("id_postingan")
+  userId      Int       @map("id_user")
+  postingan   Postingan @relation(fields: [postinganId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@id([postinganId, userId])
+  @@index([userId])
+  @@map("suka")
+}
+
+model Komentar {
+  id          Int        @id @default(autoincrement()) @map("id_komentar")
+  postinganId Int        @map("id_postingan")
+  userId      Int        @map("id_user")
+  // diisi kalau ini balasan
+  parentId    Int?       @map("id_parent")
+  isi         String
+  postingan   Postingan  @relation(fields: [postinganId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent      Komentar?  @relation("Balasan", fields: [parentId], references: [id], onDelete: Cascade)
+  balasan     Komentar[] @relation("Balasan")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  @@index([postinganId])
+  @@index([userId])
+  @@index([parentId])
+  @@map("komentar")
+}
+
+// repost di dalam platform
+model Bagikan {
+  id          Int       @id @default(autoincrement()) @map("id_bagikan")
+  postinganId Int       @map("id_postingan")
+  userId      Int       @map("id_user")
+  keterangan  String?
+  postingan   Postingan @relation(fields: [postinganId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // satu orang hanya bisa membagikan satu postingan sekali (klik lagi = batal)
+  @@unique([postinganId, userId])
+  @@index([userId])
+  @@map("bagikan")
+}
