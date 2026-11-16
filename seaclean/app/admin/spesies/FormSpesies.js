@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAksiForm } from "@/lib/useAksiForm";
 import { Input, kelasInput, PesanError, Select, Textarea } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
@@ -9,11 +9,11 @@ import { LABEL_STATUS_KATALOG, LABEL_STATUS_KONSERVASI } from "@/lib/validasi/sp
 import { simpanSpesies } from "./actions";
 
 export default function FormSpesies({ spesies, totalStok }) {
-  const [state, aksi] = useActionState(simpanSpesies.bind(null, spesies?.id ?? null), {});
+  const [state, aksi] = useAksiForm(simpanSpesies.bind(null, spesies?.id ?? null));
   const v = state.nilai ?? { ...spesies, aktif: String(spesies?.aktif ?? true), statusKonservasi: spesies?.statusKonservasi ?? "LC" };
 
   return (
-    <form action={aksi} className="flex flex-col gap-3">
+    <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">
       <PesanError pesan={state.pesan} />
       <InputFile name="fotoUrl" label="Foto spesies" folder="spesies" defaultValue={v.fotoUrl} />
       <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">

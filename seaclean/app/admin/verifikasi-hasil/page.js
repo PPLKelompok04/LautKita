@@ -15,7 +15,7 @@ const tanggal = (d) => new Date(d).toLocaleDateString("id-ID", { dateStyle: "med
 export default function VerifikasiHasilPage({ searchParams }) {
   return (
     <>
-      <Judul judul="Verifikasi Hasil Budidaya" keterangan="PBI-16 · Nilai catatan monitoring dari peserta program." />
+      <Judul judul="Verifikasi Hasil Budidaya" keterangan="Nilai catatan monitoring dari peserta program." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>

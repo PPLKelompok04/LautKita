@@ -31,6 +31,10 @@ export async function batalDaftar(kegiatanId) {
       const kegiatan = await tx.kegiatan.findUnique({ where: { id: kegiatanId } });
       if (!kegiatan || kegiatan.tanggal < new Date()) throw new Error("Kegiatan sudah lewat, tidak bisa dibatalkan");
 
+      // kehadiran yang sudah dicatat admin tidak boleh hilang karena peserta membatalkan
+      const daftar = await tx.pendaftaranKegiatan.findUnique({ where: { kegiatanId_userId: { kegiatanId, userId: user.id } } });
+      if (daftar && daftar.kehadiran !== "BELUM") throw new Error("Kehadiranmu sudah dicatat panitia, pendaftaran tidak bisa dibatalkan");
+
       await tx.pendaftaranKegiatan.delete({ where: { kegiatanId_userId: { kegiatanId, userId: user.id } } });
       // kuota kebuka lagi
       if (kegiatan.status === "PENUH") await tx.kegiatan.update({ where: { id: kegiatanId }, data: { status: "DIBUKA" } });

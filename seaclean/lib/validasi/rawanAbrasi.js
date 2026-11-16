@@ -20,4 +20,5 @@ export const rawanAbrasiSchema = z.object({
   tanggalPendataan: tanggalWajib("Tanggal pendataan"),
   keterangan: teksOpsional(),
   fotoUrl: urlFile(),
+  dokumenUrl: urlFile(),
 });

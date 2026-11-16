@@ -64,15 +64,16 @@ export function Pencarian({ action, q, placeholder = "Cari...", children }) {
 }
 
 // `kolom` = daftar judul kolom; isi tabel lewat children (<tr>...</tr>)
-export function Tabel({ kolom, kosong, children }) {
+// `tengah`: indeks kolom yang judulnya rata tengah, mis. [1, 2] (isi <td>-nya diberi className="text-center" sendiri)
+export function Tabel({ kolom, kosong, tengah = [], children }) {
   const adaIsi = Array.isArray(children) ? children.length > 0 : Boolean(children);
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left text-xs text-teks">
         <thead className="bg-latar text-[10px] font-bold uppercase text-redup">
           <tr>
-            {kolom.map((k) => (
-              <th key={k} className="px-3.5 py-2 font-bold">
+            {kolom.map((k, i) => (
+              <th key={k} className={`px-3.5 py-2 font-bold${tengah.includes(i) ? " text-center" : ""}`}>
                 {k}
               </th>
             ))}

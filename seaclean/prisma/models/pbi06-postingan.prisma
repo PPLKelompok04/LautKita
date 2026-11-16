@@ -5,12 +5,25 @@ enum StatusPostingan {
   DISEMBUNYIKAN
 }
 
+// UMUM = bawaan untuk postingan lama yang belum punya kategori
+enum KategoriPostingan {
+  UMUM
+  BUDIDAYA
+  PENCEMARAN
+  EDUKASI
+  KEGIATAN
+}
+
 model Postingan {
   id         Int                   @id @default(autoincrement()) @map("id_postingan")
   penulisId  Int                   @map("id_penulis")
   isi        String
   gambarUrl  String?               @map("gambar_url")
   status     StatusPostingan       @default(TAMPIL) @map("status_publikasi")
+  kategori   KategoriPostingan     @default(UMUM)
+  // tag lokasi postingan (opsional)
+  wilayahId  Int?                  @map("id_wilayah")
+  wilayah    Wilayah?              @relation(fields: [wilayahId], references: [id], onDelete: SetNull)
   penulis    User                  @relation(fields: [penulisId], references: [id], onDelete: Cascade)
   tag        PostinganTag[]
   peringatan PeringatanPostingan[]
@@ -24,6 +37,8 @@ model Postingan {
 
   @@index([penulisId])
   @@index([createdAt])
+  @@index([kategori])
+  @@index([wilayahId])
   @@map("postingan")
 }
 

@@ -3,12 +3,12 @@
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { gagal, pesanErrorPrisma, validasi } from "@/lib/validasi/umum";
 import { wilayahSchema } from "@/lib/validasi/wilayah";
 
 export async function simpanWilayah(id, _state, formData) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/wilayah");
   const { data, pesan, nilai } = validasi(wilayahSchema, formData);
   if (pesan) return { pesan, nilai };
 
@@ -24,7 +24,7 @@ export async function simpanWilayah(id, _state, formData) {
 
 // Data yang memakai wilayah ini tidak ikut terhapus, kolom wilayahnya jadi kosong
 export async function hapusWilayah(id) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/wilayah");
   try {
     await prisma.wilayah.delete({ where: { id } });
   } catch (e) {

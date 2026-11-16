@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { batalDaftar, daftarKegiatan } from "./actions";
 
-export default function TombolDaftar({ kegiatanId, terdaftar, bisaDaftar }) {
+export default function TombolDaftar({ kegiatanId, terdaftar, bisaDaftar, sudahAbsen }) {
   const [pending, startTransition] = useTransition();
 
   function klik() {
@@ -12,6 +12,11 @@ export default function TombolDaftar({ kegiatanId, terdaftar, bisaDaftar }) {
       const hasil = terdaftar ? await batalDaftar(kegiatanId) : await daftarKegiatan(kegiatanId);
       if (hasil?.pesan) alert(hasil.pesan);
     });
+  }
+
+  // kehadiran sudah dicatat panitia, pendaftaran dikunci
+  if (terdaftar && sudahAbsen) {
+    return <span className="text-xs font-semibold text-redup">Kehadiran sudah dicatat</span>;
   }
 
   if (!terdaftar && !bisaDaftar) {

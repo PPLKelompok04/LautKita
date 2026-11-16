@@ -5,7 +5,7 @@ import { Input, PesanError, Select, Textarea } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
 import { LABEL_JENIS_MONITORING } from "@/lib/validasi/monitoring";
-import { isiTanggal } from "@/lib/validasi/umum";
+import { hariIni, isiTanggal } from "@/lib/validasi/umum";
 import { simpanMonitoring } from "./actions";
 
 export default function FormMonitoring({ monitoring, program }) {
@@ -14,7 +14,7 @@ export default function FormMonitoring({ monitoring, program }) {
     async (prev, formData) => ({ ...(await simpanMonitoring(monitoring?.id ?? null, prev, formData)), n: (prev.n ?? 0) + 1 }),
     {}
   );
-  const v = state.nilai ?? { ...monitoring, tanggal: isiTanggal(monitoring?.tanggal ?? new Date()) };
+  const v = state.nilai ?? { ...monitoring, tanggal: monitoring ? isiTanggal(monitoring.tanggal) : hariIni() };
 
   return (
     <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">

@@ -14,7 +14,7 @@ export default function LokasiPage({ searchParams }) {
     <>
       <Judul
         judul="Lokasi budidaya & zona"
-        keterangan="PBI-02 · Lokasi budidaya terumbu karang, ikan, dan mangrove beserta pembagian zonanya."
+        keterangan="Lokasi budidaya terumbu karang, ikan, dan mangrove beserta pembagian zonanya."
         tambah={{ href: "/admin/lokasi/baru", label: "Tambah lokasi" }}
       />
       <Suspense fallback={<Memuat />}>

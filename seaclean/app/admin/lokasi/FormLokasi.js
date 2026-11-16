@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAksiForm } from "@/lib/useAksiForm";
 import { Input, PesanError, Select, Textarea } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
@@ -10,11 +10,11 @@ import { simpanLokasi } from "./actions";
 
 // `wilayah` = opsi { id: "Nama, Provinsi" } dari opsiWilayah()
 export default function FormLokasi({ lokasi, wilayah }) {
-  const [state, aksi] = useActionState(simpanLokasi.bind(null, lokasi?.id ?? null), {});
+  const [state, aksi] = useAksiForm(simpanLokasi.bind(null, lokasi?.id ?? null));
   const v = state.nilai ?? lokasi ?? {};
 
   return (
-    <form action={aksi} className="flex flex-col gap-3">
+    <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">
       <PesanError pesan={state.pesan} />
       <Input label="Nama lokasi" name="nama" defaultValue={v.nama} required />
       <div className="grid gap-4 sm:grid-cols-2">

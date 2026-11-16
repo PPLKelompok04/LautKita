@@ -33,7 +33,7 @@ async function Isi() {
       include: {
         wilayah: { select: { nama: true } },
         _count: { select: { pendaftaran: true } },
-        pendaftaran: { where: { userId: session.user.id }, select: { id: true } },
+        pendaftaran: { where: { userId: session.user.id }, select: { id: true, kehadiran: true } },
       },
       orderBy: { tanggal: "asc" },
     }),
@@ -75,7 +75,12 @@ async function Isi() {
                 </span>
               </div>
               <div>
-                <TombolDaftar kegiatanId={k.id} terdaftar={terdaftar} bisaDaftar={k.status === "DIBUKA"} />
+                <TombolDaftar
+                  kegiatanId={k.id}
+                  terdaftar={terdaftar}
+                  bisaDaftar={k.status === "DIBUKA"}
+                  sudahAbsen={terdaftar && k.pendaftaran[0].kehadiran !== "BELUM"}
+                />
               </div>
             </div>
           </article>

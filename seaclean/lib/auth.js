@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { bolehAkses, daftarAkses } from "@/lib/akses";
 
 export const authOptions = {
   session: { strategy: "jwt" },
@@ -28,6 +29,7 @@ export const authOptions = {
           email: user.email,
           image: user.fotoUrl,
           role: user.role.kode,
+          akses: user.role.akses,
         };
       },
     }),
@@ -37,12 +39,15 @@ export const authOptions = {
       if (user) {
         token.id = Number(user.id);
         token.role = user.role;
+        // daftar halaman admin yang boleh dibuka; perubahan hak akses berlaku setelah login ulang
+        token.akses = user.akses;
       }
       return token;
     },
     session({ session, token }) {
       session.user.id = token.id;
       session.user.role = token.role;
+      session.user.akses = daftarAkses(token.role, token.akses);
       return session;
     },
   },
@@ -68,6 +73,16 @@ export async function requireRole(...roles) {
   });
   if (!user || !user.aktif) throw new Error("Akun tidak aktif");
   if (roles.length && !roles.includes(user.role.kode)) {
+    throw new Error("Anda tidak punya akses untuk aksi ini");
+  }
+  return user;
+}
+
+// Untuk Server Action di halaman admin: boleh kalau ADMIN atau role-nya diberi akses ke `halaman`
+// (diatur di menu Role & hak akses). Dicek ke database, jadi perubahan hak akses langsung berlaku.
+export async function requireAkses(halaman) {
+  const user = await requireRole();
+  if (!bolehAkses(user.role.kode, user.role.akses, halaman)) {
     throw new Error("Anda tidak punya akses untuk aksi ini");
   }
   return user;

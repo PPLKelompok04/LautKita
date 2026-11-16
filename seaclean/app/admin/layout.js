@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { connection } from "next/server";
+import { Bell } from "lucide-react";
 import { getSession } from "@/lib/auth";
+import { jumlahBelumDibaca } from "@/lib/notifikasi";
 import Sidebar, { Breadcrumb } from "@/components/admin/Sidebar";
 import TombolKeluar from "@/components/TombolKeluar";
 
@@ -42,7 +45,25 @@ async function SidebarSesi() {
   } catch (e) {
     session = null;
   }
-  return <Sidebar role={session?.user?.role} />;
+  return <Sidebar role={session?.user?.role} akses={session?.user?.akses} />;
+}
+
+// Lonceng notifikasi di header panel (petugas menerima tugas tindak lanjut lewat notifikasi)
+async function LoncengNotifikasi() {
+  await connection();
+  const session = await getSession();
+  if (!session?.user) return null;
+  const belum = await jumlahBelumDibaca(session.user.id);
+  return (
+    <Link href="/notifikasi" aria-label="Notifikasi" className="relative rounded-[10px] p-2 text-laut hover:bg-latar">
+      <Bell size={18} />
+      {belum > 0 && (
+        <span className="absolute -right-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
+          {belum > 9 ? "9+" : belum}
+        </span>
+      )}
+    </Link>
+  );
 }
 
 export default function AdminLayout({ children }) {
@@ -55,6 +76,12 @@ export default function AdminLayout({ children }) {
         <header className="flex h-[76px] items-center justify-between border-b border-garis bg-white px-4 md:px-8">
           <Breadcrumb />
           <div className="flex items-center gap-3">
+            <Link href="/timeline" className="rounded-[10px] px-3 py-1.5 text-xs font-semibold text-laut hover:bg-latar">
+              Timeline
+            </Link>
+            <Suspense>
+              <LoncengNotifikasi />
+            </Suspense>
             <Suspense>
               <ProfilAdmin />
             </Suspense>

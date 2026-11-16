@@ -12,7 +12,7 @@ export const metadata = { title: "Laporan Pencemaran - LautKita" };
 export default function LaporanPage({ searchParams }) {
   return (
     <>
-      <Judul judul="Laporan pencemaran" keterangan="PBI-09 · Semua laporan yang dikirim anggota." />
+      <Judul judul="Laporan pencemaran" keterangan="Semua laporan yang dikirim anggota." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>

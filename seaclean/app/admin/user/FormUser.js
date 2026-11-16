@@ -1,17 +1,17 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAksiForm } from "@/lib/useAksiForm";
 import { Centang, Input, PesanError, Select } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
 import { simpanUser } from "./actions";
 
 export default function FormUser({ user, roles, wilayah }) {
-  const [state, aksi] = useActionState(simpanUser.bind(null, user?.id ?? null), {});
+  const [state, aksi] = useAksiForm(simpanUser.bind(null, user?.id ?? null));
   const v = state.nilai ?? user ?? { aktif: true };
 
   return (
-    <form action={aksi} className="flex flex-col gap-3">
+    <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">
       <PesanError pesan={state.pesan} />
       <Input label="Nama lengkap" name="nama" defaultValue={v.nama} required />
       <Input label="Email" name="email" type="email" defaultValue={v.email} required />

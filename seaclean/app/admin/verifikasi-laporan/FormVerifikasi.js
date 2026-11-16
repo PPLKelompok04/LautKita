@@ -1,17 +1,17 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAksiForm } from "@/lib/useAksiForm";
 import { PesanError, Textarea } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import { LABEL_KEPUTUSAN } from "@/lib/validasi/verifikasiLaporan";
 import { verifikasiLaporan } from "./actions";
 
 export default function FormVerifikasi({ laporanId }) {
-  const [state, aksi] = useActionState(verifikasiLaporan.bind(null, laporanId), {});
+  const [state, aksi] = useAksiForm(verifikasiLaporan.bind(null, laporanId));
   const v = state.nilai ?? {};
 
   return (
-    <form action={aksi} className="flex flex-col gap-3">
+    <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">
       <PesanError pesan={state.pesan} />
       <fieldset className="flex flex-col gap-2">
         <legend className="pb-1 text-[13px] font-semibold text-teks">Keputusan *</legend>

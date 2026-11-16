@@ -1,6 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { kelasTombolKedua, kelasTombolUtama } from "@/components/admin/kelas";
+import { Suspense } from "react";
+import { getSession } from "@/lib/auth";
+
+// Kelas ditulis lengkap, bukan menimpa kelasTombolUtama/Kedua: tanpa tailwind-merge, kelas warna yang bentrok
+// (mis. bg-laut vs bg-white) tidak bisa ditebak mana yang menang, dan dulu membuat teks tombol tidak terlihat.
+const kelasDasar = "inline-flex min-h-12 items-center justify-center gap-2 rounded-[10px] border px-[18px] py-2 text-sm font-semibold";
+const kelasPutih = `${kelasDasar} border-white bg-white text-laut hover:bg-laut-muda`;
+const kelasGaris = `${kelasDasar} border-white/60 bg-transparent text-white hover:bg-white/10`;
 
 export default function Home() {
   return (
@@ -13,14 +20,32 @@ export default function Home() {
       <p className="max-w-md text-sm text-white/85">
         Budidaya terumbu karang, ikan, dan mangrove, pelaporan pencemaran, serta timeline komunitas dalam satu tempat.
       </p>
-      <div className="flex gap-3">
-        <Link href="/timeline" className={`${kelasTombolUtama} border-white bg-white text-laut`}>
+      <div className="flex flex-wrap justify-center gap-3">
+        <Link href="/timeline" className={kelasPutih}>
           Buka timeline
         </Link>
-        <Link href="/admin" className={`${kelasTombolKedua} border-white/40 bg-transparent text-white hover:bg-white/10`}>
-          Panel admin
-        </Link>
+        <Suspense>
+          <TombolKedua />
+        </Suspense>
       </div>
     </main>
+  );
+}
+
+// Tamu: tombol Masuk. Sudah login: Panel admin hanya kalau role-nya punya akses panel.
+async function TombolKedua() {
+  const session = await getSession();
+  if (!session?.user) {
+    return (
+      <Link href="/login" className={kelasGaris}>
+        Masuk
+      </Link>
+    );
+  }
+  if (session.user.role !== "ADMIN" && !session.user.akses?.length) return null;
+  return (
+    <Link href="/admin" className={kelasGaris}>
+      Panel admin
+    </Link>
   );
 }

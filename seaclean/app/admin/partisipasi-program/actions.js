@@ -2,11 +2,11 @@
 
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { kirimNotifikasi } from "@/lib/notifikasi";
 
 export async function putuskanPeserta(id, setuju, catatan) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/partisipasi-program");
   catatan = String(catatan ?? "").trim() || null;
   if (!setuju && !catatan) return { pesan: "Isi alasan penolakan dulu" };
 

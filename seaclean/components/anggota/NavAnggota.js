@@ -35,7 +35,7 @@ async function AksiAkun() {
 
   return (
     <>
-      {["ADMIN", "PETUGAS"].includes(session.user.role) && (
+      {(session.user.role === "ADMIN" || session.user.akses?.length > 0) && (
         <Link href="/admin" className="rounded-[10px] px-3 py-1.5 text-xs font-semibold text-laut hover:bg-latar">
           Panel
         </Link>

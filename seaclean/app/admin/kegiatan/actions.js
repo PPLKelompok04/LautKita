@@ -3,12 +3,12 @@
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { gagal, pesanErrorPrisma, validasi } from "@/lib/validasi/umum";
 import { kegiatanSchema } from "@/lib/validasi/kegiatan";
 
 export async function simpanKegiatan(id, _state, formData) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/kegiatan");
   const { data, pesan, nilai } = validasi(kegiatanSchema, formData);
   if (pesan) return { pesan, nilai };
 
@@ -22,7 +22,7 @@ export async function simpanKegiatan(id, _state, formData) {
 }
 
 export async function hapusKegiatan(id) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/kegiatan");
   try {
     await prisma.kegiatan.delete({ where: { id } });
   } catch (e) {

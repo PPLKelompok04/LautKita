@@ -3,12 +3,12 @@
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { gagal, pesanErrorPrisma, validasi } from "@/lib/validasi/umum";
 import { bibitSchema, spesiesSchema } from "@/lib/validasi/spesies";
 
 export async function simpanSpesies(id, _state, formData) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/spesies");
   const { data, pesan, nilai } = validasi(spesiesSchema, formData);
   if (pesan) return { pesan, nilai };
 
@@ -26,7 +26,7 @@ export async function simpanSpesies(id, _state, formData) {
 }
 
 export async function hapusSpesies(id) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/spesies");
   try {
     await prisma.spesies.delete({ where: { id } });
   } catch (e) {
@@ -37,7 +37,7 @@ export async function hapusSpesies(id) {
 }
 
 export async function simpanBibit(spesiesId, bibitId, _state, formData) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/spesies");
   const { data, pesan, nilai } = validasi(bibitSchema, formData);
   if (pesan) return { pesan, nilai };
 
@@ -52,7 +52,7 @@ export async function simpanBibit(spesiesId, bibitId, _state, formData) {
 }
 
 export async function hapusBibit(spesiesId, bibitId) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/spesies");
   try {
     await prisma.bibit.delete({ where: { id: bibitId, spesiesId } });
   } catch (e) {

@@ -9,6 +9,7 @@ import { HalamanAnggota } from "@/components/anggota/Halaman";
 import FormMonitoring from "../FormMonitoring";
 import { hapusMonitoring } from "../actions";
 import { opsiProgram } from "../program";
+import { tampilTanggalJam } from "@/lib/validasi/umum";
 
 export const metadata = { title: "Ubah Monitoring - LautKita" };
 
@@ -35,10 +36,32 @@ async function Isi({ params }) {
     : null;
   if (!monitoring) notFound();
 
+  // catatan verifikator terakhir, ditampilkan langsung (dulu hanya lewat notifikasi)
+  const revisi =
+    monitoring.status === "REVISI"
+      ? await prisma.verifikasiHasil.findFirst({
+          where: { monitoringId: monitoring.id, keputusan: "REVISI" },
+          orderBy: { createdAt: "desc" },
+          select: { catatan: true, createdAt: true, verifikator: { select: { nama: true } } },
+        })
+      : null;
+
   return (
     <Kartu kanan={<TombolHapus aksi={hapusMonitoring.bind(null, monitoring.id)} konfirmasi="Hapus catatan ini?" />}>
       {monitoring.status === "REVISI" && (
-        <p className="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-800">Perlu revisi. Alasannya ada di notifikasi dari verifikator.</p>
+        <div className="flex flex-col gap-0.5 rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          <p className="font-semibold">Perlu revisi</p>
+          {revisi ? (
+            <>
+              <p className="whitespace-pre-line text-sm">{revisi.catatan}</p>
+              <p className="text-amber-800">
+                {revisi.verifikator.nama} · {tampilTanggalJam(revisi.createdAt)}
+              </p>
+            </>
+          ) : (
+            <p>Perbaiki catatan lalu kirim ulang.</p>
+          )}
+        </div>
       )}
       <FormMonitoring monitoring={monitoring} program={await opsiProgram(session.user)} />
     </Kartu>

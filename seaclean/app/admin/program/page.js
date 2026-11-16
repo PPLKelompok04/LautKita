@@ -18,7 +18,7 @@ export default function ProgramPage({ searchParams }) {
     <>
       <Judul
         judul="Program budidaya"
-        keterangan="PBI-04 · Atur program, jadwal, kapasitas peserta, dan target rehabilitasi pesisir."
+        keterangan="Atur program, jadwal, kapasitas peserta, dan target rehabilitasi pesisir."
         tambah={{ href: "/admin/program", label: "Tambah program" }}
       />
       <Suspense fallback={<Memuat />}>
@@ -47,10 +47,16 @@ async function IsiHalaman({ searchParams }) {
       orderBy: { tanggalMulai: "desc" },
     }),
     Number.isInteger(idPilih) && idPilih > 0
-      ? prisma.programBudidaya.findUnique({ where: { id: idPilih }, include: { spesies: { select: { namaLokal: true, namaIlmiah: true } } } })
+      ? prisma.programBudidaya.findUnique({
+          where: { id: idPilih },
+          include: {
+            spesies: { select: { namaLokal: true, namaIlmiah: true } },
+            _count: { select: { peserta: { where: { status: "DISETUJUI" } } } },
+          },
+        })
       : null,
-    prisma.lokasiBudidaya.findMany({ select: { id: true, nama: true, latitude: true, longitude: true }, orderBy: { nama: "asc" } }),
-    prisma.spesies.findMany({ where: { aktif: true }, select: { id: true, namaLokal: true, namaIlmiah: true }, orderBy: { namaLokal: "asc" } }),
+    prisma.lokasiBudidaya.findMany({ select: { id: true, nama: true, ekosistem: true, latitude: true, longitude: true }, orderBy: { nama: "asc" } }),
+    prisma.spesies.findMany({ where: { aktif: true }, select: { id: true, namaLokal: true, namaIlmiah: true, ekosistem: true }, orderBy: { namaLokal: "asc" } }),
   ]);
 
   return (
@@ -104,11 +110,16 @@ async function IsiHalaman({ searchParams }) {
               <span className="text-[11px] text-redup">{kode("PRG", dipilih.id)}</span>
             </div>
             <p className="flex items-center gap-2 text-xs text-redup">
-              <Users size={14} /> {dipilih.kuotaPeserta} kursi tersedia
+              <Users size={14} /> {Math.max(dipilih.kuotaPeserta - dipilih._count.peserta, 0)} dari {dipilih.kuotaPeserta} kursi tersedia
             </p>
             <p className="flex items-center gap-2 text-xs text-redup">
               <Sprout size={14} /> Target {dipilih.targetBibit.toLocaleString("id-ID")} bibit · {dipilih.spesies.namaLokal}
             </p>
+            {dipilih.dokumenUrl && (
+              <a href={dipilih.dokumenUrl} target="_blank" rel="noreferrer" className="text-xs font-semibold text-laut hover:underline">
+                Lihat dokumen program (PDF)
+              </a>
+            )}
           </Kartu>
         )}
 

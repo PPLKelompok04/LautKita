@@ -88,6 +88,23 @@ export function isiTanggal(d) {
   return d ? new Date(d).toISOString().slice(0, 10) : "";
 }
 
+// Tanggal hari ini menurut WIB, format "YYYY-MM-DD".
+// Jangan pakai new Date().toISOString(): itu tanggal UTC, jadi jam 00.00-06.59 WIB masih terhitung kemarin.
+export function hariIni() {
+  return new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+}
+
+// Untuk validasi kolom tanggal (dari <input type="date">, tersimpan sebagai 00.00 UTC):
+// true kalau tanggal itu sesudah hari ini (WIB)
+export function setelahHariIni(d) {
+  return new Date(d) > new Date(`${hariIni()}T00:00:00Z`);
+}
+
+// true kalau hari pada kolom tanggal sudah habis menurut WIB (lewat pukul 23.59 WIB), mis. batas pendaftaran
+export function sudahLewat(d) {
+  return Date.now() >= new Date(d).getTime() + 17 * 3600000;
+}
+
 // Format tanggal + jam (WIB) untuk <input type="datetime-local">
 export function isiTanggalJam(d) {
   if (!d) return "";

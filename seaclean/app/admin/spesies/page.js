@@ -18,7 +18,7 @@ export default function SpesiesPage({ searchParams }) {
     <>
       <Judul
         judul="Spesies & bibit"
-        keterangan="PBI-03 · Kelola katalog, panduan tanam, dan stok bibit yang tersedia untuk program."
+        keterangan="Kelola katalog, panduan tanam, dan stok bibit yang tersedia untuk program."
         tambah={{ href: "/admin/spesies", label: "Tambah spesies" }}
       />
       <Suspense fallback={<Memuat />}>
