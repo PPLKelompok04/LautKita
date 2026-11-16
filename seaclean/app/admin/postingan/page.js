@@ -4,7 +4,7 @@ import { CalendarRange, Eye, EyeOff, MessagesSquare } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { JumlahData, Judul, Kartu, Lencana, Memuat, Pencarian, Statistik, Tabel } from "@/components/admin/Halaman";
 import { TombolHapus } from "@/components/admin/Tombol";
-import { LABEL_STATUS_POSTINGAN } from "@/lib/validasi/postingan";
+import { LABEL_KATEGORI_POSTINGAN, LABEL_STATUS_POSTINGAN } from "@/lib/validasi/postingan";
 import { tampilTanggalJam } from "@/lib/validasi/umum";
 import { hapusPostingan } from "@/app/timeline/actions";
 import TombolStatus from "./TombolStatus";
@@ -17,7 +17,7 @@ const hariLalu = (n) => new Date(Date.now() - n * 24 * 3600 * 1000);
 export default function PostinganPage({ searchParams }) {
   return (
     <>
-      <Judul judul="Moderasi postingan" keterangan="PBI-06 · Pantau dan moderasi postingan timeline komunitas." />
+      <Judul judul="Moderasi postingan" keterangan="Pantau dan moderasi postingan timeline komunitas." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>
@@ -102,7 +102,10 @@ async function IsiHalaman({ searchParams }) {
                     </a>
                   )}
                 </td>
-                <td className="text-laut">{p.tag.map((t) => `#${t.tag.nama}`).join(" ")}</td>
+                <td className="text-laut">
+                  <p className="font-semibold text-teks">{LABEL_KATEGORI_POSTINGAN[p.kategori]}</p>
+                  {p.tag.map((t) => `#${t.tag.nama}`).join(" ")}
+                </td>
                 <td className="whitespace-nowrap text-redup">{tampilTanggalJam(p.createdAt)}</td>
                 <td>
                   {sudahTindak ? (

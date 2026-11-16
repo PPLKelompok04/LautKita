@@ -12,7 +12,7 @@ const tanggal = (d) => new Date(d).toLocaleDateString("id-ID", { dateStyle: "med
 export default function MonitoringAdminPage({ searchParams }) {
   return (
     <>
-      <Judul judul="Monitoring budidaya" keterangan="PBI-15 · Rekap catatan penanaman dan tingkat hidup tiap program." />
+      <Judul judul="Monitoring budidaya" keterangan="Rekap catatan penanaman dan tingkat hidup tiap program." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>
@@ -59,14 +59,14 @@ async function IsiHalaman({ searchParams }) {
         ]}
       />
       <Kartu judul="Rekap per program">
-        <Tabel kolom={["Program", "Catatan", "Ditanam", "Hidup", "Tingkat hidup"]} kosong="Belum ada catatan">
+        <Tabel kolom={["Program", "Catatan", "Ditanam", "Hidup", "Tingkat hidup"]} tengah={[1, 2, 3, 4]} kosong="Belum ada catatan">
           {rekap.map((r) => (
             <tr key={r.programId}>
               <td className="font-semibold">{namaProgram[r.programId]}</td>
-              <td>{r._count}</td>
-              <td>{r._sum.jumlahDitanam}</td>
-              <td>{r._sum.jumlahHidup}</td>
-              <td className="font-semibold">{tingkatHidup(r._sum.jumlahDitanam, r._sum.jumlahHidup)}%</td>
+              <td className="text-center">{r._count}</td>
+              <td className="text-center">{r._sum.jumlahDitanam}</td>
+              <td className="text-center">{r._sum.jumlahHidup}</td>
+              <td className="text-center font-semibold">{tingkatHidup(r._sum.jumlahDitanam, r._sum.jumlahHidup)}%</td>
             </tr>
           ))}
         </Tabel>

@@ -13,7 +13,7 @@ export const metadata = { title: "Peserta Program - LautKita" };
 export default function PartisipasiProgramPage({ searchParams }) {
   return (
     <>
-      <Judul judul="Peserta program budidaya" keterangan="PBI-14 · Setujui atau tolak anggota yang ingin bergabung ke program." />
+      <Judul judul="Peserta program budidaya" keterangan="Setujui atau tolak anggota yang ingin bergabung ke program." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>

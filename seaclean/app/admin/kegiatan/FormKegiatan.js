@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAksiForm } from "@/lib/useAksiForm";
 import { Input, PesanError, Select, Textarea } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
@@ -10,11 +10,11 @@ import { isiTanggalJam } from "@/lib/validasi/umum";
 import { simpanKegiatan } from "./actions";
 
 export default function FormKegiatan({ kegiatan, wilayah }) {
-  const [state, aksi] = useActionState(simpanKegiatan.bind(null, kegiatan?.id ?? null), {});
+  const [state, aksi] = useAksiForm(simpanKegiatan.bind(null, kegiatan?.id ?? null));
   const v = state.nilai ?? { ...kegiatan, status: kegiatan?.status ?? "DIBUKA", tanggal: isiTanggalJam(kegiatan?.tanggal) };
 
   return (
-    <form action={aksi} className="flex flex-col gap-3">
+    <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">
       <PesanError pesan={state.pesan} />
       <Input label="Judul kegiatan" name="judul" defaultValue={v.judul} required />
       <div className="grid gap-4 sm:grid-cols-2">

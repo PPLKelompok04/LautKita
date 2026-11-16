@@ -3,6 +3,7 @@
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
+import { bolehAkses } from "@/lib/akses";
 import { gagal, pesanErrorPrisma, validasi } from "@/lib/validasi/umum";
 import { ambilTag, postinganSchema } from "@/lib/validasi/postingan";
 
@@ -42,12 +43,13 @@ export async function ubahPostingan(id, _state, formData) {
   return { ok: true };
 }
 
-// penulis atau admin bisa hapus
+// penulis, atau yang punya akses moderasi postingan, bisa hapus
 export async function hapusPostingan(id) {
   const user = await requireRole();
+  const moderator = bolehAkses(user.role.kode, user.role.akses, "/admin/postingan");
   try {
     await prisma.postingan.delete({
-      where: user.role.kode === "ADMIN" ? { id } : { id, penulisId: user.id },
+      where: moderator ? { id } : { id, penulisId: user.id },
     });
   } catch (e) {
     return { pesan: pesanErrorPrisma(e) };

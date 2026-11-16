@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { CalendarDays, MapPin, Sprout, Users } from "lucide-react";
+import { CalendarDays, FileText, MapPin, Sprout, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { Lencana, Memuat } from "@/components/admin/Halaman";
 import { HalamanAnggota } from "@/components/anggota/Halaman";
 import { LABEL_STATUS_PROGRAM } from "@/lib/validasi/program";
 import { LABEL_STATUS_PESERTA, WARNA_STATUS_PESERTA } from "@/lib/validasi/pesertaProgram";
+import { sudahLewat } from "@/lib/validasi/umum";
 import FormGabung from "./FormGabung";
 
 export const metadata = { title: "Program Budidaya - LautKita" };
@@ -73,7 +74,16 @@ async function Isi() {
         </div>
         <p className="rounded-xl bg-latar px-3 py-2 text-xs text-teks">Syarat: {p.persyaratan}</p>
         {saya?.status === "DITOLAK" && saya.catatan && <p className="text-xs text-red-700">Alasan ditolak: {saya.catatan}</p>}
-        {p.status === "DIBUKA" && <FormGabung programId={p.id} status={saya?.status} />}
+        {p.dokumenUrl && (
+          <a href={p.dokumenUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-1 text-xs font-semibold text-laut hover:underline">
+            <FileText size={14} /> Dokumen program (PDF)
+          </a>
+        )}
+        {/* pendaftar yang sudah ada tetap bisa membatalkan; pendaftar baru hanya selama masih dibuka */}
+        {p.status === "DIBUKA" && (saya || !sudahLewat(p.batasPendaftaran)) && <FormGabung programId={p.id} status={saya?.status} />}
+        {p.status === "DIBUKA" && !saya && sudahLewat(p.batasPendaftaran) && (
+          <p className="text-xs font-semibold text-redup">Pendaftaran sudah ditutup</p>
+        )}
       </article>
     );
   });

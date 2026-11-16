@@ -21,8 +21,8 @@ export function Merek({ sub = "Platform admin" }) {
 }
 
 // `role` dari session, menu yang tampil disesuaikan
-export default function Sidebar({ role }) {
-  const menu = menuUntuk(role);
+export default function Sidebar({ role, akses }) {
+  const menu = menuUntuk(role, akses);
   return (
     <aside className="flex flex-col justify-between bg-laut px-4 py-6 md:sticky md:top-0 md:h-screen md:w-[236px] md:shrink-0 md:overflow-y-auto">
       <div className="flex flex-col gap-6">

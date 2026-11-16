@@ -36,6 +36,7 @@ export const programSchema = z
     persyaratan: teksWajib("Persyaratan peserta", 10),
     status: pilihan("Status program", Object.keys(LABEL_STATUS_PROGRAM)),
     fotoUrl: urlFile(),
+    dokumenUrl: urlFile(),
   })
   .refine((d) => d.tanggalSelesai >= d.tanggalMulai, { message: "Tanggal selesai tidak boleh sebelum tanggal mulai" })
   .refine((d) => d.batasPendaftaran <= d.tanggalMulai, { message: "Batas pendaftaran harus sebelum tanggal mulai" });

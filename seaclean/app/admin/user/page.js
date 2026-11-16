@@ -14,7 +14,7 @@ export default function UserPage({ searchParams }) {
     <>
       <Judul
         judul="Manajemen pengguna"
-        keterangan="PBI-01 · Kelola akun, peran, dan akses seluruh pengguna platform."
+        keterangan="Kelola akun, peran, dan akses seluruh pengguna platform."
         tambah={{ href: "/admin/user/baru", label: "Tambah pengguna" }}
       />
       <Suspense fallback={<Memuat />}>

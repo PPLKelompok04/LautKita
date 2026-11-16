@@ -1,15 +1,17 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useAksiForm } from "@/lib/useAksiForm";
+import { useState } from "react";
 import { Input, PesanError, Select, Textarea } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
 import { LABEL_MONITORING, LABEL_STATUS_PROGRAM } from "@/lib/validasi/program";
+import { LABEL_EKOSISTEM } from "@/lib/validasi/lokasi";
 import { isiTanggal } from "@/lib/validasi/umum";
 import { simpanProgram } from "./actions";
 
 export default function FormProgram({ program, daftarLokasi, daftarSpesies }) {
-  const [state, aksi] = useActionState(simpanProgram.bind(null, program?.id ?? null), {});
+  const [state, aksi] = useAksiForm(simpanProgram.bind(null, program?.id ?? null));
   const v = state.nilai ?? {
     ...program,
     status: program?.status ?? "DRAF",
@@ -23,7 +25,7 @@ export default function FormProgram({ program, daftarLokasi, daftarSpesies }) {
   const lokasi = daftarLokasi.find((l) => String(l.id) === lokasiId);
 
   return (
-    <form action={aksi} className="flex flex-col gap-3">
+    <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">
       <PesanError pesan={state.pesan} />
       <div className="grid gap-2 sm:grid-cols-2">
         <Input label="Nama program" wajib name="nama" defaultValue={v.nama} />
@@ -38,7 +40,7 @@ export default function FormProgram({ program, daftarLokasi, daftarSpesies }) {
             name="lokasiId"
             value={lokasiId}
             onChange={(e) => setLokasiId(e.target.value)}
-            opsi={Object.fromEntries(daftarLokasi.map((l) => [l.id, l.nama]))}
+            opsi={Object.fromEntries(daftarLokasi.map((l) => [l.id, `${l.nama} · ${LABEL_EKOSISTEM[l.ekosistem]}`]))}
             kosong="Pilih lokasi budidaya"
           />
         </div>
@@ -60,7 +62,7 @@ export default function FormProgram({ program, daftarLokasi, daftarSpesies }) {
             wajib
             name="spesiesId"
             defaultValue={v.spesiesId}
-            opsi={Object.fromEntries(daftarSpesies.map((s) => [s.id, `${s.namaLokal} · ${s.namaIlmiah ?? ""}`]))}
+            opsi={Object.fromEntries(daftarSpesies.map((s) => [s.id, `${s.namaLokal} · ${s.namaIlmiah ?? ""} (${LABEL_EKOSISTEM[s.ekosistem]})`]))}
             kosong="Pilih spesies"
           />
         </div>
@@ -76,6 +78,7 @@ export default function FormProgram({ program, daftarLokasi, daftarSpesies }) {
         <InputFile name="fotoUrl" label="Foto sampul" folder="program" defaultValue={v.fotoUrl} />
         <Select label="Status program" wajib name="status" defaultValue={v.status} opsi={LABEL_STATUS_PROGRAM} />
       </div>
+      <InputFile name="dokumenUrl" label="Dokumen program (opsional, mis. proposal/TOR)" jenis="dokumen" folder="program" defaultValue={v.dokumenUrl} />
       <AksiForm batal="/admin/program" simpan={program ? "Simpan perubahan" : "Simpan program"} />
     </form>
   );

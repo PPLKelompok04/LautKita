@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { Memuat } from "@/components/admin/Halaman";
 import NavAnggota from "@/components/anggota/NavAnggota";
-import { includePostingan, untukKartu } from "@/app/postingan/data";
+import { includePostingan, opsiLokasiPostingan, untukKartu } from "@/app/postingan/data";
+import { LABEL_KATEGORI_POSTINGAN } from "@/lib/validasi/postingan";
 import FormPostingan from "./FormPostingan";
 import KartuPostingan from "./KartuPostingan";
 
@@ -24,14 +25,18 @@ export default function TimelinePage({ searchParams }) {
 }
 
 async function Feed({ searchParams }) {
-  const [{ tag = "" }, session] = await Promise.all([searchParams, getSession()]);
+  const [{ tag = "", kategori = "" }, session] = await Promise.all([searchParams, getSession()]);
   // -1 kalau belum login
   const userId = session?.user?.id ?? -1;
   const admin = session?.user?.role === "ADMIN";
 
-  const filterTag = tag ? { tag: { some: { tag: { nama: tag.toLowerCase() } } } } : {};
+  // filter #tag dan kategori (PBI-06), bisa digabung
+  const filterTag = {
+    ...(tag ? { tag: { some: { tag: { nama: tag.toLowerCase() } } } } : {}),
+    ...(LABEL_KATEGORI_POSTINGAN[kategori] ? { kategori } : {}),
+  };
 
-  const [daftar, dibagikan, topikPopuler] = await Promise.all([
+  const [daftar, dibagikan, topikPopuler, lokasi, saya] = await Promise.all([
     prisma.postingan.findMany({
       where: {
         // penulis tetap bisa lihat postingannya
@@ -50,6 +55,8 @@ async function Feed({ searchParams }) {
     }),
     // tag terpopuler
     prisma.tag.findMany({ orderBy: { postingan: { _count: "desc" } }, take: 6, select: { nama: true } }),
+    opsiLokasiPostingan(),
+    session?.user ? prisma.user.findUnique({ where: { id: userId }, select: { wilayahId: true } }) : null,
   ]);
 
   // postingan asli + yang dibagikan ulang, urut dari yang terbaru
@@ -65,20 +72,38 @@ async function Feed({ searchParams }) {
 
   const chip = (aktif) =>
     `whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-semibold ${aktif ? "bg-laut text-white" : "bg-white text-teks border border-garis"}`;
+  // link filter dengan mempertahankan filter lain yang sedang aktif
+  const tautan = (ubah) => {
+    const q = new URLSearchParams({ ...(tag && { tag }), ...(kategori && { kategori }), ...ubah });
+    for (const [k, v] of [...q]) if (!v) q.delete(k);
+    return q.size ? `/timeline?${q}` : "/timeline";
+  };
 
   return (
     <>
       <nav className="-mx-4 flex gap-2 overflow-x-auto px-4">
-        <Link href="/timeline" className={chip(!tag)}>
-          Semua
+        <Link href={tautan({ kategori: "" })} className={chip(!kategori)}>
+          Semua kategori
+        </Link>
+        {Object.entries(LABEL_KATEGORI_POSTINGAN)
+          .filter(([k]) => k !== "UMUM")
+          .map(([k, label]) => (
+            <Link key={k} href={tautan({ kategori: k })} className={chip(kategori === k)}>
+              {label}
+            </Link>
+          ))}
+      </nav>
+      <nav className="-mx-4 flex gap-2 overflow-x-auto px-4">
+        <Link href={tautan({ tag: "" })} className={chip(!tag)}>
+          Semua topik
         </Link>
         {topikPopuler.map((t) => (
-          <Link key={t.nama} href={`/timeline?tag=${encodeURIComponent(t.nama)}`} className={chip(tag === t.nama)}>
+          <Link key={t.nama} href={tautan({ tag: t.nama })} className={chip(tag === t.nama)}>
             #{t.nama}
           </Link>
         ))}
       </nav>
-      <FormPostingan />
+      <FormPostingan lokasi={lokasi} lokasiAwal={saya?.wilayahId} />
       {feed.length === 0 && <p className="text-center text-sm text-redup">Belum ada postingan.</p>}
       {feed.map(({ kunci, postingan: p, dibagikan }) => (
         <KartuPostingan
@@ -88,6 +113,7 @@ async function Feed({ searchParams }) {
           // kartu repost tidak menampilkan Edit/Hapus, supaya postingan asli tidak terhapus dari repost
           milikSendiri={!dibagikan && p.penulisId === userId}
           bisaHapus={!dibagikan && (p.penulisId === userId || admin)}
+          lokasi={lokasi}
         />
       ))}
     </>

@@ -1,14 +1,26 @@
 import { z } from "zod";
-import { teksWajib, urlFile } from "./umum";
+import { idOpsional, pilihan, teksWajib, urlFile } from "./umum";
 
 export const LABEL_STATUS_POSTINGAN = {
   TAMPIL: "Tampil",
   DISEMBUNYIKAN: "Disembunyikan",
 };
 
+// UMUM = bawaan (juga untuk postingan lama sebelum ada kategori)
+export const LABEL_KATEGORI_POSTINGAN = {
+  UMUM: "Umum",
+  BUDIDAYA: "Budidaya",
+  PENCEMARAN: "Pencemaran",
+  EDUKASI: "Edukasi",
+  KEGIATAN: "Kegiatan",
+};
+
 export const postinganSchema = z.object({
   isi: teksWajib("Isi postingan").pipe(z.string().max(2000, "Isi postingan maksimal 2000 karakter")),
   gambarUrl: urlFile(),
+  kategori: pilihan("Kategori", Object.keys(LABEL_KATEGORI_POSTINGAN)),
+  // tag lokasi postingan
+  wilayahId: idOpsional("Lokasi"),
 });
 
 // ambil #tag dari isi, maks 10

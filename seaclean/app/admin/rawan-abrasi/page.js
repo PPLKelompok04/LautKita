@@ -16,7 +16,7 @@ export default function RawanAbrasiPage({ searchParams }) {
     <>
       <Judul
         judul="Lokasi rawan abrasi"
-        keterangan="PBI-08 · Titik pesisir yang rentan abrasi, dasar peta budidaya & dampak mangrove."
+        keterangan="Titik pesisir yang rentan abrasi, dasar peta budidaya & dampak mangrove."
         tambah={{ href: "/admin/rawan-abrasi/baru", label: "Tambah titik" }}
       />
       <Suspense fallback={<Memuat />}>
@@ -76,6 +76,11 @@ async function IsiHalaman({ searchParams }) {
                 <p className="text-redup">
                   {r.latitude.toFixed(4)}, {r.longitude.toFixed(4)}
                 </p>
+                {r.dokumenUrl && (
+                  <a href={r.dokumenUrl} target="_blank" rel="noreferrer" className="font-semibold text-laut hover:underline">
+                    Dokumen kajian (PDF)
+                  </a>
+                )}
               </td>
               <td>{r.wilayah ? `${r.wilayah.nama}, ${r.wilayah.provinsi}` : "-"}</td>
               <td>

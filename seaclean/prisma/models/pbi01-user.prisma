@@ -4,6 +4,8 @@ model Role {
   kode      String  @unique @map("kode_role")
   nama      String  @unique @map("nama_role")
   deskripsi String?
+  // href halaman admin yang boleh dibuka role ini, mis. "/admin/tindak-lanjut". ADMIN selalu boleh semua.
+  akses     String[] @default([]) @map("hak_akses")
   users     User[]
 
   @@map("roles")

@@ -2,13 +2,13 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { kirimNotifikasi } from "@/lib/notifikasi";
 import { gagal, validasi } from "@/lib/validasi/umum";
 import { LABEL_KEPUTUSAN_HASIL, verifikasiHasilSchema } from "@/lib/validasi/verifikasiHasil";
 
 export async function verifikasiHasil(monitoringId, _state, formData) {
-  const user = await requireRole("ADMIN", "PETUGAS");
+  const user = await requireAkses("/admin/verifikasi-hasil");
   const { data, pesan, nilai } = validasi(verifikasiHasilSchema, formData);
   if (pesan) return { pesan, nilai };
 

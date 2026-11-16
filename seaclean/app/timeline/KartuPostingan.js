@@ -2,19 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MapPin, Repeat2 } from "lucide-react";
+import { MapPin, Repeat2, TriangleAlert } from "lucide-react";
 import { Lencana } from "@/components/admin/Halaman";
 import { TombolHapus } from "@/components/admin/Tombol";
 import { tampilTanggalJam } from "@/lib/validasi/umum";
+import { LABEL_KATEGORI_POSTINGAN } from "@/lib/validasi/postingan";
 import BarInteraksi from "@/app/postingan/BarInteraksi";
 import { hapusPostingan } from "./actions";
 import FormPostingan from "./FormPostingan";
 
 // `dibagikan` diisi kalau kartu ini repost: { nama, keterangan }
-export default function KartuPostingan({ postingan: p, milikSendiri, bisaHapus, dibagikan }) {
+// `lokasi` = opsi wilayah untuk form edit
+export default function KartuPostingan({ postingan: p, milikSendiri, bisaHapus, dibagikan, lokasi }) {
   const [edit, setEdit] = useState(false);
 
-  if (edit) return <FormPostingan postingan={p} onSelesai={() => setEdit(false)} />;
+  if (edit) return <FormPostingan postingan={p} lokasi={lokasi} onSelesai={() => setEdit(false)} />;
 
   return (
     <article className="flex flex-col gap-3 rounded-2xl border border-garis bg-white p-4">
@@ -42,15 +44,27 @@ export default function KartuPostingan({ postingan: p, milikSendiri, bisaHapus, 
             <Lencana warna="biru">{p.penulis.role.nama}</Lencana>
           </div>
           <p className="text-xs text-redup">{tampilTanggalJam(p.createdAt)}</p>
-          {p.penulis.wilayah && (
-            <span className="inline-flex w-fit items-center gap-1 rounded-full bg-laut-muda px-2 py-0.5 text-xs text-laut-tua">
-              <MapPin size={12} />
-              {p.penulis.wilayah.nama}, {p.penulis.wilayah.provinsi}
-            </span>
-          )}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {p.kategori && p.kategori !== "UMUM" && <Lencana warna="hijau">{LABEL_KATEGORI_POSTINGAN[p.kategori]}</Lencana>}
+            {p.lokasi && (
+              <span className="inline-flex w-fit items-center gap-1 rounded-full bg-laut-muda px-2 py-0.5 text-xs text-laut-tua">
+                <MapPin size={12} />
+                {p.lokasi.nama}, {p.lokasi.provinsi}
+              </span>
+            )}
+          </div>
         </div>
         {p.status === "DISEMBUNYIKAN" && <Lencana warna="merah">Disembunyikan admin</Lencana>}
       </div>
+      {/* pesan peringatan admin, hanya terlihat oleh penulis (data hanya dikirim untuk penulis) */}
+      {milikSendiri && p.peringatan && (
+        <div className="flex gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          <TriangleAlert size={16} className="mt-0.5 shrink-0" />
+          <p>
+            <span className="font-semibold">Peringatan dari admin:</span> {p.peringatan}
+          </p>
+        </div>
+      )}
       <p className="whitespace-pre-line text-sm leading-relaxed text-teks">{p.isi}</p>
       {p.gambarUrl && (
         // eslint-disable-next-line @next/next/no-img-element

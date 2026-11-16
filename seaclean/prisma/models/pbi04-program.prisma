@@ -31,6 +31,8 @@ model ProgramBudidaya {
   persyaratan      String
   status           StatusProgram       @default(DRAF)
   fotoUrl          String?             @map("foto_url")
+  // dokumen pendukung program (PDF), mis. proposal/TOR
+  dokumenUrl       String?             @map("dokumen_url")
   lokasi           LokasiBudidaya      @relation(fields: [lokasiId], references: [id], onDelete: Restrict)
   spesies          Spesies             @relation(fields: [spesiesId], references: [id], onDelete: Restrict)
   createdAt        DateTime            @default(now()) @map("created_at")

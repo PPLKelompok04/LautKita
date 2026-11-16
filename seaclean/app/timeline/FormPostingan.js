@@ -5,18 +5,21 @@ import { Camera, SquarePen } from "lucide-react";
 import { kelasInput, PesanError } from "@/components/admin/Field";
 import { TombolSimpan } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
+import { LABEL_KATEGORI_POSTINGAN } from "@/lib/validasi/postingan";
 import { buatPostingan, ubahPostingan } from "./actions";
 
-export default function FormPostingan({ postingan, onSelesai }) {
+// `lokasi` = opsi wilayah { id: "Nama, Provinsi" }, `lokasiAwal` = wilayah profil penulis (bawaan tag lokasi)
+export default function FormPostingan({ postingan, onSelesai, lokasi = {}, lokasiAwal }) {
   const [buka, setBuka] = useState(Boolean(postingan));
   const [state, aksi] = useActionState(async (prev, formData) => {
     const hasil = postingan ? await ubahPostingan(postingan.id, prev, formData) : await buatPostingan(prev, formData);
-    if (!hasil?.ok) return { ...hasil, terkirim: prev.terkirim };
+    // `n` naik tiap balasan supaya form dipasang ulang dan pilihan <select> tidak hilang saat gagal validasi
+    if (!hasil?.ok) return { ...hasil, terkirim: prev.terkirim, n: (prev.n ?? 0) + 1 };
     onSelesai?.();
     setBuka(Boolean(postingan));
-    return { terkirim: (prev.terkirim ?? 0) + 1 };
+    return { terkirim: (prev.terkirim ?? 0) + 1, n: (prev.n ?? 0) + 1 };
   }, {});
-  const v = state.nilai ?? postingan ?? {};
+  const v = state.nilai ?? postingan ?? { kategori: "UMUM", wilayahId: lokasiAwal ?? "" };
 
   if (!buka) {
     return (
@@ -39,13 +42,10 @@ export default function FormPostingan({ postingan, onSelesai }) {
     );
   }
 
+  const kelasPilih = "min-h-[38px] w-full rounded-[10px] border border-garis bg-white px-3 text-xs text-teks";
+
   return (
-    <form
-      action={aksi}
-      // reset input foto
-      key={state.terkirim ?? 0}
-      className="flex flex-col gap-3 rounded-2xl border border-garis bg-white p-4"
-    >
+    <form action={aksi} key={state.n ?? 0} className="flex flex-col gap-3 rounded-2xl border border-garis bg-white p-4">
       <PesanError pesan={state.pesan} />
       <textarea
         name="isi"
@@ -54,6 +54,29 @@ export default function FormPostingan({ postingan, onSelesai }) {
         placeholder="Ceritakan kegiatan atau temuanmu... gunakan #tag, mis. #mangrove"
         className={kelasInput}
       />
+      <div className="grid gap-2 sm:grid-cols-2">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-teks">
+          Kategori
+          <select name="kategori" defaultValue={v.kategori ?? "UMUM"} className={kelasPilih}>
+            {Object.entries(LABEL_KATEGORI_POSTINGAN).map(([k, label]) => (
+              <option key={k} value={k}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-semibold text-teks">
+          Lokasi
+          <select name="wilayahId" defaultValue={v.wilayahId ?? ""} className={kelasPilih}>
+            <option value="">(tanpa lokasi)</option>
+            {Object.entries(lokasi).map(([id, nama]) => (
+              <option key={id} value={id}>
+                {nama}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
       <InputFile name="gambarUrl" label="Foto (opsional)" folder="postingan" defaultValue={v.gambarUrl} />
       <div className="flex justify-end gap-3">
         <button

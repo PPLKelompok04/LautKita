@@ -13,7 +13,7 @@ export const metadata = { title: "Tindak Lanjut Laporan - LautKita" };
 export default function TindakLanjutPage() {
   return (
     <>
-      <Judul judul="Tindak lanjut laporan" keterangan="PBI-12 · Tugaskan petugas ke laporan yang valid dan catat hasil penanganannya." />
+      <Judul judul="Tindak lanjut laporan" keterangan="Tugaskan petugas ke laporan yang valid dan catat hasil penanganannya." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman />
       </Suspense>

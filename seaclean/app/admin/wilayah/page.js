@@ -12,7 +12,7 @@ export default function WilayahPage({ searchParams }) {
     <>
       <Judul
         judul="Wilayah"
-        keterangan="Data bersama · dipakai user, lokasi budidaya, kegiatan, dan rawan abrasi"
+        keterangan="Wilayah yang dipakai pengguna, lokasi budidaya, kegiatan, dan titik rawan abrasi."
         tambah={{ href: "/admin/wilayah/baru", label: "Tambah Wilayah" }}
       />
       <Suspense fallback={<Memuat />}>

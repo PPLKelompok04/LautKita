@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useAksiForm } from "@/lib/useAksiForm";
 import { Centang, Field, Input, kelasInput, PesanError, Select, Textarea } from "@/components/admin/Field";
 import { AksiForm } from "@/components/admin/Tombol";
 import InputFile from "@/components/InputFile";
@@ -8,11 +8,11 @@ import { LABEL_JENIS_PENCEMARAN, LABEL_KEPARAHAN, WARNA_KEPARAHAN } from "@/lib/
 import { simpanKategori } from "./actions";
 
 export default function FormKategori({ kategori }) {
-  const [state, aksi] = useActionState(simpanKategori.bind(null, kategori?.id ?? null), {});
+  const [state, aksi] = useAksiForm(simpanKategori.bind(null, kategori?.id ?? null));
   const v = state.nilai ?? kategori ?? { aktif: true, tingkatKeparahan: "SEDANG", warnaPeta: WARNA_KEPARAHAN.SEDANG };
 
   return (
-    <form action={aksi} className="flex flex-col gap-3">
+    <form key={state.n ?? 0} action={aksi} className="flex flex-col gap-3">
       <PesanError pesan={state.pesan} />
       <Input label="Nama kategori" name="nama" defaultValue={v.nama} placeholder="mis. Pukat Harimau" required />
       <div className="grid gap-4 sm:grid-cols-3">

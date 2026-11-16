@@ -15,7 +15,7 @@ export const metadata = { title: "Peserta Kegiatan - LautKita" };
 export default function PesertaKegiatanPage({ searchParams }) {
   return (
     <>
-      <Judul judul="Peserta kegiatan" keterangan="PBI-13 · Lihat pendaftar tiap kegiatan dan catat kehadirannya." />
+      <Judul judul="Peserta kegiatan" keterangan="Lihat pendaftar tiap kegiatan dan catat kehadirannya." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>

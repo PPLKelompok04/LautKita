@@ -13,6 +13,7 @@ model Wilayah {
   lokasiBudidaya LokasiBudidaya[] // PBI-02
   kegiatan       Kegiatan[] // PBI-05
   rawanAbrasi    LokasiRawanAbrasi[] // PBI-08f
+  postingan      Postingan[] // PBI-06 (tag lokasi)
 
   @@unique([nama, provinsi])
   @@map("wilayah")

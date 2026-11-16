@@ -6,6 +6,7 @@ import { Judul, Kartu, Lencana, Memuat, Tabel } from "@/components/admin/Halaman
 import { TombolHapus } from "@/components/admin/Tombol";
 import { ROLE_SISTEM } from "@/lib/validasi/user";
 import { hapusRole } from "./actions";
+import { HALAMAN_AKSES } from "../menu";
 
 export const metadata = { title: "Role - LautKita" };
 
@@ -14,7 +15,7 @@ export default function RolePage() {
     <>
       <Judul
         judul="Role"
-        keterangan="PBI-01 · Peran pengguna dan hak aksesnya"
+        keterangan="Peran pengguna dan hak aksesnya"
         tambah={{ href: "/admin/role/baru", label: "Tambah Role" }}
       />
       <Suspense fallback={<Memuat />}>
@@ -33,7 +34,7 @@ async function DaftarRole() {
 
   return (
     <Kartu judul="Daftar role">
-    <Tabel kolom={["Kode", "Nama", "Deskripsi", "Jumlah User", ""]}>
+    <Tabel kolom={["Kode", "Nama", "Deskripsi", "Hak akses panel", "Jumlah User", ""]}>
       {data.map((r) => (
         <tr key={r.id}>
           <td>
@@ -41,6 +42,13 @@ async function DaftarRole() {
           </td>
           <td className="font-medium">{r.nama}</td>
           <td className="text-slate-600">{r.deskripsi}</td>
+          <td className="max-w-xs text-slate-600">
+            {r.kode === "ADMIN"
+              ? "Semua halaman"
+              : r.akses.length
+                ? HALAMAN_AKSES.filter((h) => r.akses.includes(h.href)).map((h) => h.label).join(", ")
+                : "Tidak ada (hanya halaman anggota)"}
+          </td>
           <td>{r._count.users}</td>
           <td className="space-x-3 whitespace-nowrap">
             <Link href={`/admin/role/${r.id}`} className="font-semibold text-laut hover:underline">

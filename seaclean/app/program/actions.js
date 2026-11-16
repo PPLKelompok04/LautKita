@@ -3,6 +3,7 @@
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
+import { sudahLewat } from "@/lib/validasi/umum";
 
 export async function gabungProgram(programId, _state, formData) {
   const user = await requireRole();
@@ -10,8 +11,8 @@ export async function gabungProgram(programId, _state, formData) {
 
   const program = await prisma.programBudidaya.findUnique({ where: { id: programId } });
   if (!program || program.status !== "DIBUKA") return { pesan: "Pendaftaran program ini tidak dibuka" };
-  // batas pendaftaran dihitung sampai akhir hari
-  if (new Date(program.batasPendaftaran.getTime() + 86400000) < new Date()) return { pesan: "Batas pendaftaran sudah lewat" };
+  // batas pendaftaran dihitung sampai akhir hari (23.59 WIB)
+  if (sudahLewat(program.batasPendaftaran)) return { pesan: "Batas pendaftaran sudah lewat" };
 
   try {
     await prisma.pesertaProgram.create({ data: { programId, userId: user.id, motivasi } });

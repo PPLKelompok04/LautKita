@@ -1,15 +1,44 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Image from "next/image";
+import { prisma } from "@/lib/prisma";
 import FormLogin from "./FormLogin";
 
 export const metadata = { title: "Masuk - LautKita" };
 
 // Tampilan mengikuti mockup Figma "Login Admin" (node 202:2). Aset ada di public/login/.
+// Angka statistik diambil dari database (dulu angka contoh dari mockup: 128+, 99.4%, 15.8k).
 const STATISTIK = [
-  { ikon: "/login/ikon-globe.svg", w: 15, h: 15, rw: 15, rh: 15, nilai: "128+", warna: "text-[#c4e7ff]", label: "Wilayah Konservasi Terpantau" },
-  { ikon: "/login/ikon-centang.svg", w: 15, h: 15, rw: 15, rh: 15, nilai: "99.4%", warna: "text-[#5bb8fe]", label: "Tingkat Validasi Laporan" },
-  { ikon: "/login/ikon-sampah.svg", w: 15, h: 10.875, rw: 120, rh: 87, nilai: "15.8k", warna: "text-[#acedff]", label: "Kg Sampah & Pukat Terangkat" },
+  { ikon: "/login/ikon-globe.svg", w: 15, h: 15, rw: 15, rh: 15, warna: "text-[#c4e7ff]", label: "Wilayah Terdata" },
+  { ikon: "/login/ikon-centang.svg", w: 15, h: 15, rw: 15, rh: 15, warna: "text-[#5bb8fe]", label: "Relawan Aktif" },
+  { ikon: "/login/ikon-sampah.svg", w: 15, h: 10.875, rw: 120, rh: 87, warna: "text-[#acedff]", label: "Laporan Pencemaran Selesai Ditangani" },
 ];
+
+async function Statistik() {
+  await connection();
+  const angka = await Promise.all([
+    prisma.wilayah.count(),
+    prisma.user.count({ where: { aktif: true, role: { kode: "RELAWAN" } } }),
+    prisma.laporanPencemaran.count({ where: { status: "SELESAI" } }),
+  ]);
+  return <KotakStatistik angka={angka.map((n) => n.toLocaleString("id-ID"))} />;
+}
+
+function KotakStatistik({ angka }) {
+  return (
+    <div className="relative flex gap-3 border-t border-white/10 pt-[17px]">
+      {STATISTIK.map((s, i) => (
+        <div key={s.label} className="flex flex-1 flex-col gap-1 rounded-xl bg-white/5 p-3 backdrop-blur-[8px]">
+          <span className="flex items-center gap-1.5">
+            <Image src={s.ikon} alt="" width={s.rw} height={s.rh} style={{ width: s.w, height: s.h }} />
+            <span className={`text-lg font-bold leading-6 ${s.warna}`}>{angka[i]}</span>
+          </span>
+          <span className="text-[11px] font-medium leading-[13.75px] text-[#d0ecff]">{s.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function LoginPage() {
   return (
@@ -18,17 +47,7 @@ export default function LoginPage() {
         <PanelVisual />
         <section className="flex flex-1 flex-col justify-between gap-6 p-6 sm:p-10 lg:p-14">
           <div className="flex flex-col gap-1.5">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="flex items-center gap-1.5 rounded-full bg-[#d0ecff] px-3 py-1 text-[11px] font-medium text-[#004e6b]">
-                <Image src="/login/ikon-rbac.svg" alt="" width={10.667} height={13.333} />
-                RBAC Secured • Level Admin & Petugas Lapangan
-              </span>
-              <span className="flex items-center gap-1 text-[11px] font-medium text-[#70787e]">
-                <span className="size-2 rounded-full bg-[#5bb8fe]" />
-                NextAuth + Supabase
-              </span>
-            </div>
-            <h1 className="pt-1.5 text-[22px] font-bold leading-7 tracking-[-0.22px] text-[#001e2c]">
+            <h1 className="text-[22px] font-bold leading-7 tracking-[-0.22px] text-[#001e2c]">
               Portal Administrasi LautKita
             </h1>
             <p className="text-[13px] leading-[19px] text-[#40484d]">
@@ -112,17 +131,9 @@ function PanelVisual() {
         </div>
       </div>
 
-      <div className="relative flex gap-3 border-t border-white/10 pt-[17px]">
-        {STATISTIK.map((s) => (
-          <div key={s.nilai} className="flex flex-1 flex-col gap-1 rounded-xl bg-white/5 p-3 backdrop-blur-[8px]">
-            <span className="flex items-center gap-1.5">
-              <Image src={s.ikon} alt="" width={s.rw} height={s.rh} style={{ width: s.w, height: s.h }} />
-              <span className={`text-lg font-bold leading-6 ${s.warna}`}>{s.nilai}</span>
-            </span>
-            <span className="text-[11px] font-medium leading-[13.75px] text-[#d0ecff]">{s.label}</span>
-          </div>
-        ))}
-      </div>
+      <Suspense fallback={<KotakStatistik angka={["-", "-", "-"]} />}>
+        <Statistik />
+      </Suspense>
 
       <p className="relative flex gap-3 pt-10 text-xs italic leading-4 text-[#dcf1ff]">
         <Image src="/login/ikon-kutip.svg" alt="" width={85} height={72} style={{ width: 14.167, height: 12 }} className="mt-0.5 shrink-0 self-start" />

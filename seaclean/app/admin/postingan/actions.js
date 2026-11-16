@@ -2,13 +2,14 @@
 
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { pesanErrorPrisma } from "@/lib/validasi/umum";
+import { kirimNotifikasi } from "@/lib/notifikasi";
 import { LABEL_STATUS_POSTINGAN } from "@/lib/validasi/postingan";
 
 // sembunyikan / tampilkan postingan
 export async function ubahStatusPostingan(id, status) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/postingan");
   if (!LABEL_STATUS_POSTINGAN[status]) return { pesan: "Status tidak valid" };
   try {
     await prisma.postingan.update({ where: { id }, data: { status } });
@@ -20,7 +21,7 @@ export async function ubahStatusPostingan(id, status) {
 
 // kirim pesan peringatan ke penulis (opsional sekalian menyembunyikan postingan)
 export async function kirimPeringatan(postinganId, pesan, sembunyikan = false) {
-  const sesi = await requireRole("ADMIN");
+  const sesi = await requireAkses("/admin/postingan");
 
   const teks = String(pesan || "").trim();
   if (teks.length < 5) return { pesan: "Pesan peringatan minimal 5 karakter" };
@@ -35,8 +36,18 @@ export async function kirimPeringatan(postinganId, pesan, sembunyikan = false) {
     }
     if (!adminId) return { pesan: "Admin tidak ditemukan" };
 
+    const postingan = await prisma.postingan.findUnique({ where: { id: postinganId }, select: { penulisId: true } });
+    if (!postingan) return { pesan: "Postingan tidak ditemukan" };
+
     const operasi = [
       prisma.peringatanPostingan.create({ data: { postinganId, adminId, pesan: teks } }),
+      // peringatan dikirim ke penulis lewat notifikasi (dulu hanya tersimpan, penulis tidak pernah tahu isinya)
+      kirimNotifikasi({
+        userId: postingan.penulisId,
+        judul: sembunyikan ? "Postinganmu disembunyikan admin" : "Peringatan untuk postinganmu",
+        isi: teks,
+        tautan: `/postingan/${postinganId}`,
+      }),
     ];
     if (sembunyikan) {
       operasi.push(prisma.postingan.update({ where: { id: postinganId }, data: { status: "DISEMBUNYIKAN" } }));
@@ -50,7 +61,7 @@ export async function kirimPeringatan(postinganId, pesan, sembunyikan = false) {
 
 // edit pesan peringatan
 export async function ubahPeringatan(idPeringatan, pesan) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/postingan");
 
   const teks = String(pesan || "").trim();
   if (teks.length < 5) return { pesan: "Pesan peringatan minimal 5 karakter" };
@@ -66,7 +77,7 @@ export async function ubahPeringatan(idPeringatan, pesan) {
 
 // hapus pesan peringatan
 export async function hapusPeringatan(idPeringatan) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/postingan");
   try {
     await prisma.peringatanPostingan.delete({ where: { id: idPeringatan } });
   } catch (e) {

@@ -26,7 +26,7 @@ async function DaftarMenu() {
   const session = await getSession();
   return (
     <>
-      {menuUntuk(session?.user?.role).filter((g) => g.grup !== "Menu utama").map((g) => (
+      {menuUntuk(session?.user?.role, session?.user?.akses).filter((g) => g.grup !== "Menu utama").map((g) => (
         <section key={g.grup} className="flex flex-col gap-2">
           <h2 className="text-[10px] font-bold uppercase text-redup">{g.grup}</h2>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -41,10 +41,7 @@ async function DaftarMenu() {
                   <span className="flex size-10 items-center justify-center rounded-xl bg-laut-muda text-laut">
                     <Ikon size={20} />
                   </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-teks">{m.label}</span>
-                    <span className="block text-[11px] text-redup">{m.pbi}</span>
-                  </span>
+                  <span className="block text-sm font-semibold text-teks">{m.label}</span>
                 </Link>
               );
             })}

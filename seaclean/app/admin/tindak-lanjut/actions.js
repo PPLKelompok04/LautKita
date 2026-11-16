@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses, requireRole } from "@/lib/auth";
 import { kirimNotifikasi } from "@/lib/notifikasi";
 import { kode } from "@/components/admin/Halaman";
 import { gagal, validasi } from "@/lib/validasi/umum";
@@ -42,7 +42,7 @@ export async function tugaskanPetugas(laporanId, _state, formData) {
 }
 
 export async function selesaikanTindakLanjut(laporanId, _state, formData) {
-  const user = await requireRole("ADMIN", "PETUGAS");
+  const user = await requireAkses("/admin/tindak-lanjut");
   const { data, pesan, nilai } = validasi(penangananSchema, formData);
   if (pesan) return { pesan, nilai };
 

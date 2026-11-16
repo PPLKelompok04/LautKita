@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { lokasiDenganZonaSchema } from "@/lib/validasi/lokasi";
 
 // GET dipakai juga oleh peta (PBI-20), jadi bisa diakses tanpa login.
@@ -22,7 +22,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    await requireRole("ADMIN");
+    await requireAkses("/admin/lokasi");
   } catch (e) {
     return Response.json({ message: e.message }, { status: 403 });
   }

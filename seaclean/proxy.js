@@ -1,21 +1,25 @@
+import { NextResponse } from "next/server";
 import { withAuth } from "next-auth/middleware";
+import { bolehAkses } from "./lib/akses";
 
-// Halaman verifikasi juga boleh dibuka Petugas lapangan
-const HALAMAN_PETUGAS = ["/admin/verifikasi-laporan", "/admin/tindak-lanjut", "/admin/verifikasi-hasil"];
-
-// Halaman /admin hanya untuk Admin, halaman lain di matcher cukup login.
-// Ini hanya untuk redirect halaman; setiap Server Action tetap cek role sendiri.
-export default withAuth({
-  pages: { signIn: "/login" },
-  callbacks: {
-    authorized({ token, req }) {
-      if (!token) return false;
-      const path = req.nextUrl.pathname;
-      if (!path.startsWith("/admin") || token.role === "ADMIN") return true;
-      return token.role === "PETUGAS" && (path === "/admin" || HALAMAN_PETUGAS.some((h) => path.startsWith(h)));
-    },
+// Semua halaman di matcher wajib login. Halaman /admin dicek lagi dengan hak akses role (PBI-01):
+// user yang sudah login tapi tidak berhak diarahkan ke /akses-ditolak, bukan ke halaman login.
+// Ini hanya untuk halaman; setiap Server Action tetap cek hak akses sendiri ke database.
+export default withAuth(
+  function proxy(req) {
+    const { pathname } = req.nextUrl;
+    const token = req.nextauth.token;
+    if (pathname.startsWith("/admin") && !bolehAkses(token.role, token.akses, pathname)) {
+      const url = new URL("/akses-ditolak", req.url);
+      url.searchParams.set("dari", pathname);
+      return NextResponse.redirect(url);
+    }
   },
-});
+  {
+    pages: { signIn: "/login" },
+    callbacks: { authorized: ({ token }) => Boolean(token) },
+  }
+);
 
 export const config = {
   matcher: [

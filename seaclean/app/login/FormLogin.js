@@ -38,12 +38,9 @@ export default function FormLogin() {
       <PesanError pesan={pesan} />
 
       <div className="flex flex-col gap-1.5">
-        <div className="flex items-center justify-between">
-          <label htmlFor="email" className={kelasLabel}>
-            NIP / Email Instansi Terdaftar
-          </label>
-          <span className="text-xs text-[#70787e]">Format: @seaclean.id</span>
-        </div>
+        <label htmlFor="email" className={kelasLabel}>
+          Email
+        </label>
         <div className="relative">
           <Image src="/login/ikon-email.svg" alt="" width={16.667} height={13.333} className="absolute left-[15.67px] top-[14.83px]" />
           <input
@@ -106,23 +103,6 @@ export default function FormLogin() {
         {pending ? "Memproses..." : "Masuk ke Sistem Administrasi"}
       </button>
 
-      <div className="flex items-center py-2">
-        <span className="h-px flex-1 bg-[#c3e8ff]" />
-        <span className="px-4 text-[11px] font-medium uppercase tracking-[0.55px] text-[#70787e]">Opsi masuk terverifikasi</span>
-        <span className="h-px flex-1 bg-[#c3e8ff]" />
-      </div>
-
-      {/* SSO dan security key belum diimplementasikan; tombol ditampilkan sesuai mockup tapi nonaktif */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <button type="button" disabled title="Segera hadir" className="flex cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[#e9f5ff] py-2.5 text-xs font-semibold text-[#001e2c]">
-          <Image src="/login/ikon-sso.svg" alt="" width={16.667} height={16.667} />
-          SSO KKP & Kampus
-        </button>
-        <button type="button" disabled title="Segera hadir" className="flex cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[#e9f5ff] py-2.5 text-xs font-semibold text-[#001e2c]">
-          <Image src="/login/ikon-kunci.svg" alt="" width={115} height={60} style={{ width: 19.167, height: 10 }} />
-          Security Key (FIDO2)
-        </button>
-      </div>
     </form>
   );
 }

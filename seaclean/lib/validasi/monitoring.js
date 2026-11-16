@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { angkaWajib, pilihan, tanggalWajib, teksOpsional, urlFile } from "./umum";
+import { angkaWajib, pilihan, setelahHariIni, tanggalWajib, teksOpsional, urlFile } from "./umum";
 
 export const LABEL_JENIS_MONITORING = { PENANAMAN: "Penanaman", TRANSPLANTASI: "Transplantasi", PEMANTAUAN: "Pemantauan berkala" };
 
@@ -13,7 +13,7 @@ export const monitoringSchema = z
   .object({
     programId: z.coerce.number().int().positive("Program wajib dipilih"),
     jenis: pilihan("Jenis catatan", Object.keys(LABEL_JENIS_MONITORING)),
-    tanggal: tanggalWajib("Tanggal").refine((d) => d <= new Date(), "Tanggal tidak boleh di masa depan"),
+    tanggal: tanggalWajib("Tanggal").refine((d) => !setelahHariIni(d), "Tanggal tidak boleh di masa depan"),
     jumlahDitanam: jumlah("Jumlah ditanam").pipe(z.number().positive("Jumlah ditanam harus lebih dari 0")),
     jumlahHidup: jumlah("Jumlah hidup"),
     catatan: teksOpsional(),

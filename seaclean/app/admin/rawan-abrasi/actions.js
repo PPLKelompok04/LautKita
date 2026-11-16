@@ -3,12 +3,12 @@
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireAkses } from "@/lib/auth";
 import { gagal, pesanErrorPrisma, validasi } from "@/lib/validasi/umum";
 import { rawanAbrasiSchema } from "@/lib/validasi/rawanAbrasi";
 
 export async function simpanRawanAbrasi(id, _state, formData) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/rawan-abrasi");
   const { data, pesan, nilai } = validasi(rawanAbrasiSchema, formData);
   if (pesan) return { pesan, nilai };
 
@@ -22,7 +22,7 @@ export async function simpanRawanAbrasi(id, _state, formData) {
 }
 
 export async function hapusRawanAbrasi(id) {
-  await requireRole("ADMIN");
+  await requireAkses("/admin/rawan-abrasi");
   try {
     await prisma.lokasiRawanAbrasi.delete({ where: { id } });
   } catch (e) {

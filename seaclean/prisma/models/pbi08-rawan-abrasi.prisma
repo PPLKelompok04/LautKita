@@ -16,6 +16,8 @@ model LokasiRawanAbrasi {
   tanggalPendataan    DateTime         @map("tanggal_pendataan") @db.Date
   keterangan          String?
   fotoUrl             String?          @map("foto_url")
+  // dokumen kajian abrasi (PDF)
+  dokumenUrl          String?          @map("dokumen_url")
   wilayah             Wilayah?         @relation(fields: [wilayahId], references: [id], onDelete: SetNull)
   createdAt           DateTime         @default(now()) @map("created_at")
   updatedAt           DateTime         @updatedAt @map("updated_at")

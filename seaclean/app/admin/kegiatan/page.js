@@ -18,7 +18,7 @@ export default function KegiatanPage({ searchParams }) {
     <>
       <Judul
         judul="Kegiatan komunitas"
-        keterangan="PBI-05 · Kelola kegiatan seperti bersih pantai dan tanam mangrove."
+        keterangan="Kelola kegiatan seperti bersih pantai dan tanam mangrove."
         tambah={{ href: "/admin/kegiatan/baru", label: "Buat kegiatan" }}
       />
       <Suspense fallback={<Memuat />}>

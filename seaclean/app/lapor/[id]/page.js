@@ -7,6 +7,7 @@ import { Kartu, Memuat } from "@/components/admin/Halaman";
 import { TombolHapus } from "@/components/admin/Tombol";
 import { HalamanAnggota } from "@/components/anggota/Halaman";
 import RincianLaporan from "@/components/laporan/RincianLaporan";
+import { tampilTanggalJam } from "@/lib/validasi/umum";
 import FormLaporan from "../FormLaporan";
 import { hapusLaporan } from "../actions";
 
@@ -38,7 +39,13 @@ async function Isi({ params }) {
   const laporan = Number.isInteger(id)
     ? await prisma.laporanPencemaran.findFirst({
         where: { id, pelaporId: session.user.id },
-        include: { kategori: true, pelapor: { select: { nama: true } } },
+        include: {
+          kategori: true,
+          pelapor: { select: { nama: true } },
+          // hasil verifikasi & penanganan ditampilkan ke pelapor (dulu hanya lewat notifikasi)
+          verifikasi: { select: { keputusan: true, catatan: true, createdAt: true } },
+          tindakLanjut: { select: { status: true, catatanPenanganan: true, buktiUrl: true, selesaiAt: true, createdAt: true } },
+        },
       })
     : null;
   if (!laporan) notFound();
@@ -62,6 +69,32 @@ async function Isi({ params }) {
       <Kartu judul="Status">
         <Langkah status={laporan.status} />
       </Kartu>
+      {laporan.verifikasi && (
+        <Kartu judul={laporan.verifikasi.keputusan === "DITOLAK" ? "Alasan penolakan" : "Catatan verifikator"}>
+          <p className={`whitespace-pre-line pb-1 text-sm ${laporan.verifikasi.keputusan === "DITOLAK" ? "text-red-700" : "text-teks"}`}>
+            {laporan.verifikasi.catatan}
+          </p>
+          <p className="pb-2 text-xs text-redup">Diverifikasi {tampilTanggalJam(laporan.verifikasi.createdAt)}</p>
+        </Kartu>
+      )}
+      {laporan.tindakLanjut && (
+        <Kartu judul="Penanganan">
+          {laporan.tindakLanjut.status === "SELESAI" ? (
+            <div className="flex flex-col gap-2 pb-2">
+              <p className="whitespace-pre-line text-sm text-teks">{laporan.tindakLanjut.catatanPenanganan}</p>
+              {laporan.tindakLanjut.buktiUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={laporan.tindakLanjut.buktiUrl} alt="Bukti penanganan" className="max-h-72 w-full rounded-xl object-cover" />
+              )}
+              <p className="text-xs text-redup">Selesai ditangani {tampilTanggalJam(laporan.tindakLanjut.selesaiAt)}</p>
+            </div>
+          ) : (
+            <p className="pb-2 text-sm text-teks">
+              Petugas lapangan sudah ditugaskan sejak {tampilTanggalJam(laporan.tindakLanjut.createdAt)} dan sedang menangani laporan ini.
+            </p>
+          )}
+        </Kartu>
+      )}
       <Kartu>
         <RincianLaporan laporan={laporan} />
       </Kartu>
@@ -71,7 +104,7 @@ async function Isi({ params }) {
 
 function Langkah({ status }) {
   if (status === "DITOLAK") {
-    return <p className="text-sm text-red-700">Laporan ini ditolak verifikator. Alasannya dikirim lewat notifikasi.</p>;
+    return <p className="text-sm text-red-700">Laporan ini ditolak verifikator. Alasannya ada di bawah.</p>;
   }
   const posisi = LANGKAH.findIndex((l) => l.status === status);
   return (

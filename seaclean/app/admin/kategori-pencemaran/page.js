@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Anchor, CircleCheck, Siren, Tags } from "lucide-react";
+import { Anchor, CircleCheck, FileUp, Siren, Tags } from "lucide-react";
+import { kelasTombolKedua } from "@/components/admin/kelas";
 import { prisma } from "@/lib/prisma";
 import { JumlahData, Judul, Kartu, Lencana, Memuat, Pencarian, Statistik, Tabel } from "@/components/admin/Halaman";
 import { TombolHapus } from "@/components/admin/Tombol";
@@ -16,9 +17,12 @@ export default function KategoriPencemaranPage({ searchParams }) {
     <>
       <Judul
         judul="Kategori pencemaran"
-        keterangan="PBI-07 · Jenis pencemaran dan perusakan laut, termasuk pukat harimau."
+        keterangan="Jenis pencemaran dan perusakan laut, termasuk pukat harimau."
         tambah={{ href: "/admin/kategori-pencemaran/baru", label: "Tambah kategori" }}
       />
+      <Link href="/admin/kategori-pencemaran/import" className={`${kelasTombolKedua} w-fit self-end`}>
+        <FileUp size={18} /> Import CSV
+      </Link>
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>

@@ -6,7 +6,7 @@ import { getSession } from "@/lib/auth";
 import { Kartu, Memuat } from "@/components/admin/Halaman";
 import { HalamanAnggota } from "@/components/anggota/Halaman";
 import KartuPostingan from "@/app/timeline/KartuPostingan";
-import { includePostingan, untukKartu } from "../data";
+import { includePostingan, opsiLokasiPostingan, untukKartu } from "../data";
 import { FormKomentar, ItemKomentar } from "./Komentar";
 
 export const metadata = { title: "Postingan - LautKita" };
@@ -51,7 +51,12 @@ async function Isi({ params }) {
 
   return (
     <>
-      <KartuPostingan postingan={untukKartu(p)} milikSendiri={milikSendiri} bisaHapus={milikSendiri || admin} />
+      <KartuPostingan
+        postingan={untukKartu(p)}
+        milikSendiri={milikSendiri}
+        bisaHapus={milikSendiri || admin}
+        lokasi={milikSendiri ? await opsiLokasiPostingan() : {}}
+      />
       <Kartu judul={`Komentar · ${p._count.komentar}`}>
         {p.status === "TAMPIL" && <FormKomentar postinganId={p.id} />}
         <div className="flex flex-col divide-y divide-garis">

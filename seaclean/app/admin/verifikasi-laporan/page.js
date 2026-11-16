@@ -12,7 +12,7 @@ export const metadata = { title: "Verifikasi Laporan - LautKita" };
 export default function VerifikasiLaporanPage({ searchParams }) {
   return (
     <>
-      <Judul judul="Verifikasi laporan" keterangan="PBI-11 · Cek laporan pencemaran yang masuk sebelum ditindaklanjuti." />
+      <Judul judul="Verifikasi laporan" keterangan="Cek laporan pencemaran yang masuk sebelum ditindaklanjuti." />
       <Suspense fallback={<Memuat />}>
         <IsiHalaman searchParams={searchParams} />
       </Suspense>
